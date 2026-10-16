@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 10 · Overthink</title>
+<title>Level 10 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="gate-panel">
     <div class="gate-title">The Second Gate</div>
-    <p>The second gate knows only what the last four floors taught you.</p>
-    <p>Speak those marks, <b>in floor order</b>, and climb.</p>
+    <p>The second gate knows only what the last four levels taught you.</p>
+    <p>Speak those marks, <b>in level order</b>, and climb.</p>
   </section>
 
   <div id="hint-slot"></div>
@@ -31,18 +31,18 @@
   "use strict";
 
   // BOSS GATE: the server compares the player's letters against the
-  // marks it recorded for floors 6-9. Nothing to view-source.
+  // marks it recorded for levels 6-9. Nothing to view-source.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 10, title: "The Second Gate" });
+    var ok = await Overthink.initLevel({ level: 10, title: "The Second Gate" });
     if (!ok) return;
 
     Overthink.hints("hint-slot", [
-      "Floors 6, 7, 8, 9 — in that order.",
+      "Levels 6, 7, 8, 9 — in that order.",
       "Your marks are on the tower landing if you forgot them."
     ]);
 
     Overthink.mountBoss(10, {
-      successFlavor: "Both gates stand open. The tower grows taller from here — floors 11 to 30 are coming soon.",
+      successFlavor: "Both gates stand open. The tower grows taller from here — levels 11 to 30 are coming soon.",
       wrongMessage: "The gate does not recognize those marks."
     });
   }

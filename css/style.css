@@ -55,14 +55,14 @@ body {
 .back-link:hover { color: var(--amber); }
 
 .header-mid { flex: 1; min-width: 0; }
-.floor-label {
+.level-label {
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--amber);
   font-weight: 700;
 }
-.floor-title {
+.level-title {
   font-size: 1.05rem;
   font-weight: 700;
   white-space: nowrap;
@@ -87,7 +87,7 @@ body {
 .hp-text { font-size: 0.72rem; color: var(--muted); }
 
 /* ---------- layout ---------- */
-.floor-main, .tower-main {
+.level-main, .tower-main {
   width: 100%;
   max-width: 720px;
   margin: 0 auto;
@@ -239,7 +239,7 @@ body {
 }
 @keyframes draw { to { stroke-dashoffset: 0; } }
 
-/* ---------- locked floors ---------- */
+/* ---------- locked levels ---------- */
 .locked-card { text-align: center; padding: 44px 22px; }
 .locked-big {
   font-size: 1.6rem;
@@ -274,7 +274,7 @@ body {
 }
 .howto p { margin: 0 0 10px; color: var(--text); font-size: 0.98rem; }
 
-.floor-grid {
+.level-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
@@ -310,7 +310,7 @@ body {
 .continue-wrap { text-align: center; margin: 8px 0 30px; }
 .footer-note { text-align: center; color: var(--muted); font-size: 0.82rem; padding-bottom: 30px; }
 
-/* ---------- Floor 1: ticker ---------- */
+/* ---------- Level 1: ticker ---------- */
 #ticker {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -335,7 +335,7 @@ body.has-ticker #tower-header { top: 32px; }
   letter-spacing: 0.04em;
 }
 
-/* ---------- Floor 2: fake progress ---------- */
+/* ---------- Level 2: fake progress ---------- */
 .fake-progress { margin: 18px 0; }
 .fake-bar { height: 8px; background: #1b2340; border-radius: 4px; overflow: hidden; }
 .fake-fill { height: 100%; width: 6.6%; background: var(--blue); border-radius: 4px; }
@@ -351,7 +351,7 @@ body.has-ticker #tower-header { top: 32px; }
   background: var(--bg2);
   margin: 16px 0;
 }
-.floor-footer {
+.level-footer {
   text-align: center;
   color: var(--muted);
   font-size: 0.85rem;
@@ -360,7 +360,7 @@ body.has-ticker #tower-header { top: 32px; }
   border-top: 1px solid var(--line);
 }
 
-/* ---------- Floor 3: darkness slider ---------- */
+/* ---------- Level 3: darkness slider ---------- */
 #dark {
   width: 100%;
   height: 240px;
@@ -397,7 +397,7 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 
-/* ---------- Floor 4: two views ---------- */
+/* ---------- Level 4: two views ---------- */
 .view-toggle { display: flex; gap: 10px; margin-bottom: 16px; }
 .view-toggle .btn { flex: 1; }
 .view-toggle .btn.active {
@@ -426,7 +426,7 @@ input[type="range"]::-moz-range-thumb {
   color: var(--amber);
 }
 
-/* ---------- Floor 5 & 10: gates ---------- */
+/* ---------- Level 5 & 10: gates ---------- */
 .gate-panel {
   text-align: center;
   padding: 30px 20px;
@@ -443,7 +443,7 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 10px;
 }
 
-/* ---------- Floor 6: hot & cold ---------- */
+/* ---------- Level 6: hot & cold ---------- */
 .meter {
   position: fixed;
   top: 76px;
@@ -502,7 +502,7 @@ input[type="range"]::-moz-range-thumb {
   margin-top: 18px;
 }
 
-/* ---------- Floor 7: decoder ---------- */
+/* ---------- Level 7: decoder ---------- */
 .story {
   font-size: 1.08rem;
   line-height: 1.9;
@@ -534,7 +534,7 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: 0.06em;
 }
 
-/* ---------- Floor 8: hold button ---------- */
+/* ---------- Level 8: hold button ---------- */
 .riddle {
   font-size: 1.12rem;
   line-height: 2;
@@ -569,7 +569,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .hold-msg { min-height: 1.6em; color: var(--muted); margin-top: 6px; }
 
-/* ---------- Floor 9: starfield ---------- */
+/* ---------- Level 9: starfield ---------- */
 #sky-wrap {
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -695,7 +695,7 @@ input[type="range"]::-moz-range-thumb {
 
 /* ---------- responsive ---------- */
 @media (min-width: 640px) {
-  .floor-main, .tower-main { padding: 36px 24px 90px; }
-  .floor-grid { grid-template-columns: repeat(6, 1fr); }
+  .level-main, .tower-main { padding: 36px 24px 90px; }
+  .level-grid { grid-template-columns: repeat(6, 1fr); }
   .passcode-form { max-width: 480px; }
 }

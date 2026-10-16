@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 3 · Overthink</title>
+<title>Level 3 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <p>This floor was painted black, and the painter hid one word in the dark.</p>
+    <p>This level was painted black, and the painter hid one word in the dark.</p>
     <p class="muted">Not everything is as dark as it seems. Bring up the light.</p>
     <canvas id="dark"></canvas>
     <div class="slider-row">
@@ -38,7 +38,7 @@
   // slider raises the text alpha so the word emerges from the black.
   // The word itself arrives from the server (page source has no answers).
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 3, title: "Out of the Dark" });
+    var ok = await Overthink.initLevel({ level: 3, title: "Out of the Dark" });
     if (!ok) return;
 
     var clues = await Overthink.clues(3).catch(function () { return {}; });

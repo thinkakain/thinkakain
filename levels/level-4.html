@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 4 · Overthink</title>
+<title>Level 4 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <p>This floor looks different depending on how you look at it.</p>
+    <p>This level looks different depending on how you look at it.</p>
     <p class="muted">Combine what both views show you.</p>
     <div class="view-toggle">
       <button type="button" class="btn active" id="btn-desktop">Desktop view</button>
@@ -41,7 +41,7 @@
   "use strict";
 
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 4, title: "Two Sizes" });
+    var ok = await Overthink.initLevel({ level: 4, title: "Two Sizes" });
     if (!ok) return;
 
     var clues = await Overthink.clues(4).catch(function () { return {}; });

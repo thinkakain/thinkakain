@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 9 · Overthink</title>
+<title>Level 9 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
     <p>The hunter chases the <b>bull</b> across the sky, and his <b>dog</b> follows at his heel.</p>
@@ -36,7 +36,7 @@
   // star is the bull, the hunter, the dog is for the player to deduce
   // from the arrangement; the server holds the true sequence.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 9, title: "The Hunter" });
+    var ok = await Overthink.initLevel({ level: 9, title: "The Hunter" });
     if (!ok) return;
 
     var canvas = document.getElementById("sky");

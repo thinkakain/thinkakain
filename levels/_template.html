@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <!-- ============================================================
-     OVERTHINK — floor template.
-     Copy this file to floor-11.html, floor-12.html, ... and:
-       1. Set the <title> and the initFloor options below
-          (floor number, title).
-       2. Write your puzzle HTML inside <main id="floor-main">.
+     OVERTHINK — level template.
+     Copy this file to level-11.html, level-12.html, ... and:
+       1. Set the <title> and the initLevel options below
+          (level number, title).
+       2. Write your puzzle HTML inside <main id="level-main">.
        3. IMPORTANT: never put answers, marks, durations, or
           sequences in client code. Add the secrets to
           supabase/seed.sql (git-ignored) and fetch any public
-          display data via Overthink.clues(floor).
+          display data via Overthink.clues(level).
        4. Wire your puzzle JS at the bottom:
-            passcode floor -> Overthink.mountPasscode(floor, {...})
-            boss gate      -> Overthink.mountBoss(floor, {...})
-            hold floor     -> Overthink.submitHold(floor, ms)
-            sequence floor -> Overthink.submitSequence(floor, ids)
+            passcode level -> Overthink.mountPasscode(level, {...})
+            boss gate      -> Overthink.mountBoss(level, {...})
+            hold level     -> Overthink.submitHold(level, ms)
+            sequence level -> Overthink.submitSequence(level, ids)
             then Overthink.onSolved(res.mark, "flavor text")
        5. Add your two hints to the Overthink.hints(...) call.
-       6. Bump BUILT_FLOORS in js/engine.js AND the BUILT constant
+       6. Bump BUILT_LEVELS in js/engine.js AND the BUILT constant
           in index.html so the grid and Next button pick it up.
      ============================================================ -->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor N · Overthink</title>
+<title>Level N · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
     <!-- TODO: your puzzle flavor text and interactive elements go here.
@@ -40,8 +40,8 @@
 
   <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
-  <!-- For interactive floors with NO passcode, delete the passcode-slot
-       div and resolve the floor via submitHold / submitSequence +
+  <!-- For interactive levels with NO passcode, delete the passcode-slot
+       div and resolve the level via submitHold / submitSequence +
        Overthink.onSolved(...). -->
 
 </main>
@@ -55,15 +55,15 @@
   "use strict";
 
   async function boot() {
-    // initFloor returns false when the player is logged out (redirects
-    // to the landing) or the floor is still locked for them.
-    var ok = await Overthink.initFloor({
-      floor: 11,              // TODO: set me
-      title: "Floor Title"    // TODO: set me
+    // initLevel returns false when the player is logged out (redirects
+    // to the landing) or the level is still locked for them.
+    var ok = await Overthink.initLevel({
+      level: 11,              // TODO: set me
+      title: "Level Title"    // TODO: set me
     });
     if (!ok) return;
 
-    // TODO: optional public display data for this floor:
+    // TODO: optional public display data for this level:
     // var clues = await Overthink.clues(11).catch(function () { return {}; });
 
     // TODO: your puzzle wiring goes here.
@@ -73,7 +73,7 @@
       "Second nudge — nearly spell it out."                    // TODO
     ]);
 
-    // TODO: pick ONE of these per floor:
+    // TODO: pick ONE of these per level:
     Overthink.mountPasscode(11, {
       successFlavor: "Flavor text for the victory screen.",    // TODO
       wrongMessage: "Not quite. Try again."

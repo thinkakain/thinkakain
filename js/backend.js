@@ -97,8 +97,8 @@
 
     onAuthChange: function (cb) { return db().auth.onAuthStateChange(cb); },
 
-    // Server is the source of truth: highest unlocked floor, cleared
-    // floors, and earned marks. All reads are RLS-scoped to the player.
+    // Server is the source of truth: highest unlocked level, cleared
+    // levels, and earned marks. All reads are RLS-scoped to the player.
     fetchProgress: async function () {
       var u = (await db().auth.getUser()).data.user;
       if (!u) return null;
@@ -120,34 +120,34 @@
       };
     },
 
-    // Public per-floor display data (ticker words, canvas word, story…).
+    // Public per-level display data (ticker words, canvas word, story…).
     // Contains no answers.
-    getClues: async function (floor) {
-      var r = await db().rpc("get_floor_clues", { p_floor: floor });
+    getClues: async function (level) {
+      var r = await db().rpc("get_floor_clues", { p_floor: level });
       if (r.error) throw r.error;
       return r.data || {};
     },
 
     // Each returns {correct: bool, mark: "X"|null}. Mark only when correct.
-    validateGuess: async function (floor, guess) {
-      var r = await db().rpc("validate_guess", { p_floor: floor, p_guess: guess });
+    validateGuess: async function (level, guess) {
+      var r = await db().rpc("validate_guess", { p_floor: level, p_guess: guess });
       if (r.error) throw r.error;
       return r.data;
     },
-    validateHold: async function (floor, holdMs) {
+    validateHold: async function (level, holdMs) {
       var r = await db().rpc("validate_hold",
-        { p_floor: floor, p_hold_ms: Math.round(holdMs) });
+        { p_floor: level, p_hold_ms: Math.round(holdMs) });
       if (r.error) throw r.error;
       return r.data;
     },
-    validateSequence: async function (floor, seq) {
-      var r = await db().rpc("validate_sequence", { p_floor: floor, p_seq: seq });
+    validateSequence: async function (level, seq) {
+      var r = await db().rpc("validate_sequence", { p_floor: level, p_seq: seq });
       if (r.error) throw r.error;
       return r.data;
     },
     // Boss gates: {correct: bool}. No mark — gates award none.
-    validateBoss: async function (floor, letters) {
-      var r = await db().rpc("validate_boss", { p_floor: floor, p_letters: letters });
+    validateBoss: async function (level, letters) {
+      var r = await db().rpc("validate_boss", { p_floor: level, p_letters: letters });
       if (r.error) throw r.error;
       return r.data;
     }

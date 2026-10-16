@@ -5,22 +5,22 @@
    overlays. It contains ZERO answers, marks, or solutions — every
    verdict comes from the server via js/backend.js.
 
-   Floor pages use (all async where noted):
-     await Overthink.initFloor({floor, title, ...}) -> bool playable
+   Level pages use (all async where noted):
+     await Overthink.initLevel({level, title, ...}) -> bool playable
      Overthink.hints(slotId, [hint1, hint2])
-     Overthink.mountPasscode(floor, {wrongMessage, successFlavor})
-     Overthink.mountBoss(floor, {wrongMessage, successFlavor})
-     await Overthink.submitHold(floor, elapsedMs)  -> {correct, mark}
-     await Overthink.submitSequence(floor, ids)    -> {correct, mark}
+     Overthink.mountPasscode(level, {wrongMessage, successFlavor})
+     Overthink.mountBoss(level, {wrongMessage, successFlavor})
+     await Overthink.submitHold(level, elapsedMs)  -> {correct, mark}
+     await Overthink.submitSequence(level, ids)    -> {correct, mark}
      Overthink.onSolved(mark, flavorHtml)          -> success overlay
-     await Overthink.clues(floor)                  -> public clue payload
-     Overthink.cachedMarks()                       -> {floor: mark} (display only)
+     await Overthink.clues(level)                  -> public clue payload
+     Overthink.cachedMarks()                       -> {level: mark} (display only)
    ============================================================ */
 (function () {
   "use strict";
 
-  var TOTAL_FLOORS = 30;
-  var BUILT_FLOORS = 10; // bump as floors 11-30 are added
+  var TOTAL_LEVELS = 30;
+  var BUILT_LEVELS = 10; // bump as levels 11-30 are added
 
   var cfg = null;
   var progressCache = null;
@@ -44,11 +44,11 @@
   // ("your marks: K E _ _"). They are never trusted for validation —
   // boss gates re-check against the server's floor_marks records.
   var MARKS_KEY = "overthink_marks";
-  function cacheMark(floor, mark) {
+  function cacheMark(level, mark) {
     if (!mark) return;
     try {
       var m = JSON.parse(localStorage.getItem(MARKS_KEY) || "{}");
-      m[floor] = mark;
+      m[level] = mark;
       localStorage.setItem(MARKS_KEY, JSON.stringify(m));
     } catch (e) {}
   }
@@ -74,25 +74,25 @@
     back.href = "../index.html";
 
     var mid = make("div", "header-mid");
-    mid.appendChild(make("div", "floor-label",
-      esc(cfg.floorLabel || ("Floor " + cfg.floor))));
-    if (cfg.title) mid.appendChild(make("div", "floor-title", esc(cfg.title)));
+    mid.appendChild(make("div", "level-label",
+      esc(cfg.levelLabel || ("Level " + cfg.level))));
+    if (cfg.title) mid.appendChild(make("div", "level-title", esc(cfg.title)));
 
     header.appendChild(back);
     header.appendChild(mid);
 
     if (!cfg.hideProgress) {
       var prog = make("div", "header-progress");
-      var pct = Math.round((p.cleared.length / TOTAL_FLOORS) * 100);
+      var pct = Math.round((p.cleared.length / TOTAL_LEVELS) * 100);
       prog.appendChild(make("div", "hp-bar",
         '<div class="hp-fill" style="width:' + pct + '%"></div>'));
-      prog.appendChild(make("div", "hp-text", p.cleared.length + "/" + TOTAL_FLOORS));
+      prog.appendChild(make("div", "hp-text", p.cleared.length + "/" + TOTAL_LEVELS));
       header.appendChild(prog);
     }
   }
 
   function renderNotice(html) {
-    var main = document.getElementById("floor-main");
+    var main = document.getElementById("level-main");
     if (!main) return;
     main.innerHTML = "";
     var card = make("div", "puzzle-card locked-card", html);
@@ -105,7 +105,7 @@
   /* ---------------- success ---------------- */
 
   function showSuccess(mark, flavorHtml) {
-    if (mark) cacheMark(cfg.floor, mark);
+    if (mark) cacheMark(cfg.level, mark);
     progressCache = null; // progress changed — refetch next time
     var overlay = make("div", "success-overlay");
     var card = make("div", "success-card");
@@ -122,12 +122,12 @@
     }
     card.appendChild(make("div", "success-text", txt));
     var next = make("a", "btn next-btn", "");
-    if (cfg.floor >= BUILT_FLOORS) {
+    if (cfg.level >= BUILT_LEVELS) {
       next.href = "../index.html";
       next.textContent = "Back to the tower";
     } else {
-      next.href = "floor-" + (cfg.floor + 1) + ".html";
-      next.textContent = "Next floor \u2192"; // arrow, not emoji
+      next.href = "level-" + (cfg.level + 1) + ".html";
+      next.textContent = "Next level \u2192"; // arrow, not emoji
     }
     card.appendChild(next);
     overlay.appendChild(card);
@@ -143,9 +143,9 @@
 
   /* ---------------- public API ---------------- */
 
-  // Gate: configured backend -> logged-in session -> floor unlocked.
-  // Returns true when the floor is playable.
-  async function initFloor(options) {
+  // Gate: configured backend -> logged-in session -> level unlocked.
+  // Returns true when the level is playable.
+  async function initLevel(options) {
     cfg = options;
     if (!window.Backend.isConfigured()) {
       renderNotice("<div class='locked-big'>Not configured</div>" +
@@ -175,9 +175,9 @@
       return false;
     }
     renderHeader(p);
-    if (options.floor > p.highest_floor) {
+    if (options.level > p.highest_floor) {
       renderNotice("<div class='locked-big'>Locked</div>" +
-        "<p class='muted'>This floor opens after you clear Floor " +
+        "<p class='muted'>This level opens after you clear Level " +
         p.highest_floor + ".</p>");
       return false;
     }
@@ -212,7 +212,7 @@
 
   // Passcode form. The guess is validated server-side; the client
   // never knows the answer.
-  function mountPasscode(floor, opts) {
+  function mountPasscode(level, opts) {
     opts = opts || {};
     var slot = document.getElementById("passcode-slot");
     if (!slot || !cfg) return;
@@ -240,7 +240,7 @@
       busy = true;
       btn.disabled = true;
       msg.textContent = "";
-      window.Backend.validateGuess(floor, input.value).then(function (res) {
+      window.Backend.validateGuess(level, input.value).then(function (res) {
         busy = false;
         btn.disabled = false;
         if (res && res.correct) {
@@ -257,7 +257,7 @@
   }
 
   // Boss gates: same form, validated against the player's own marks.
-  function mountBoss(floor, opts) {
+  function mountBoss(level, opts) {
     opts = opts || {};
     var slot = document.getElementById("passcode-slot");
     if (!slot || !cfg) return;
@@ -285,7 +285,7 @@
       busy = true;
       btn.disabled = true;
       msg.textContent = "";
-      window.Backend.validateBoss(floor, input.value).then(function (res) {
+      window.Backend.validateBoss(level, input.value).then(function (res) {
         busy = false;
         btn.disabled = false;
         if (res && res.correct) {
@@ -302,25 +302,25 @@
     });
   }
 
-  // Interactive floors: thin wrappers over the backend validators.
-  // Each resolves to {correct, mark}. Floors call onSolved() on success.
-  function submitHold(floor, elapsedMs) {
-    return window.Backend.validateHold(floor, elapsedMs);
+  // Interactive levels: thin wrappers over the backend validators.
+  // Each resolves to {correct, mark}. Levels call onSolved() on success.
+  function submitHold(level, elapsedMs) {
+    return window.Backend.validateHold(level, elapsedMs);
   }
-  function submitSequence(floor, ids) {
-    return window.Backend.validateSequence(floor, ids);
+  function submitSequence(level, ids) {
+    return window.Backend.validateSequence(level, ids);
   }
   function onSolved(mark, flavorHtml) {
     showSuccess(mark, flavorHtml);
   }
 
-  // Public per-floor display data (no answers). Throws when offline.
-  function clues(floor) {
-    return window.Backend.getClues(floor);
+  // Public per-level display data (no answers). Throws when offline.
+  function clues(level) {
+    return window.Backend.getClues(level);
   }
 
   window.Overthink = {
-    initFloor: initFloor,
+    initLevel: initLevel,
     hints: hints,
     mountPasscode: mountPasscode,
     mountBoss: mountBoss,
@@ -330,7 +330,7 @@
     clues: clues,
     getProgress: getProgress,
     cachedMarks: cachedMarks,
-    TOTAL_FLOORS: TOTAL_FLOORS,
-    BUILT_FLOORS: BUILT_FLOORS
+    TOTAL_LEVELS: TOTAL_LEVELS,
+    BUILT_LEVELS: BUILT_LEVELS
   };
 })();

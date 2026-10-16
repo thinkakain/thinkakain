@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 7 · Overthink</title>
+<title>Level 7 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
     <!-- The story arrives pre-woven from the server: its hidden message
@@ -68,7 +68,7 @@
   }
 
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 7, title: "Between the Letters" });
+    var ok = await Overthink.initLevel({ level: 7, title: "Between the Letters" });
     if (!ok) return;
 
     var storyEl = document.getElementById("story");

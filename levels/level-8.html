@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 8 · Overthink</title>
+<title>Level 8 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
     <p class="riddle">
@@ -19,7 +19,7 @@
       I weigh nothing, yet I grow &mdash;<br>
       speak my name, then let it go.
     </p>
-    <p class="center muted">Answer the riddle &mdash; then <b>press and hold</b> the button for exactly as many seconds as the answer has letters. The tower judges your timing. Release too early or too late and the floor resets its patience.</p>
+    <p class="center muted">Answer the riddle &mdash; then <b>press and hold</b> the button for exactly as many seconds as the answer has letters. The tower judges your timing. Release too early or too late and the level resets its patience.</p>
     <div class="hold-wrap">
       <button type="button" id="hold-btn">HOLD</button>
       <div class="hold-timer" id="hold-timer">0.0s</div>
@@ -29,7 +29,7 @@
   </section>
 
   <div id="hint-slot"></div>
-  <!-- No passcode: this floor is cleared by the timed hold, judged server-side. -->
+  <!-- No passcode: this level is cleared by the timed hold, judged server-side. -->
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -44,7 +44,7 @@
   // server. The client measures milliseconds and submits them; the
   // server compares against its own secret. Nothing to view-source here.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 8, title: "Hold On" });
+    var ok = await Overthink.initLevel({ level: 8, title: "Hold On" });
     if (!ok) return;
 
     var btn = document.getElementById("hold-btn");

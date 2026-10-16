@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 6 · Overthink</title>
+<title>Level 6 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
   <div class="meter-bar"><div class="meter-fill" id="meter-fill"></div></div>
 </div>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="puzzle-card">
     <p>Somewhere below, the tower buried a word.</p>
@@ -48,7 +48,7 @@
   // is the player's normalized distance to that target; "BOILING"
   // (within ~1.2% of total scroll) fades the word in.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 6, title: "Hot and Cold" });
+    var ok = await Overthink.initLevel({ level: 6, title: "Hot and Cold" });
     if (!ok) return;
 
     var clues = await Overthink.clues(6).catch(function () { return {}; });

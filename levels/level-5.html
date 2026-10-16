@@ -3,20 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 5 · Overthink</title>
+<title>Level 5 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
 
   <section class="gate-panel">
     <div class="gate-title">The Gatekeeper</div>
     <p>Halt.</p>
-    <p>Each floor you cleared left a <b>mark</b> on you — a single letter, earned, not given. The tower revealed each one on its victory screen, and your marks are listed on the tower landing.</p>
-    <p>Speak the four marks, <b>in the order of the floors that gave them</b>, and the gate will know you.</p>
+    <p>Each level you cleared left a <b>mark</b> on you — a single letter, earned, not given. The tower revealed each one on its victory screen, and your marks are listed on the tower landing.</p>
+    <p>Speak the four marks, <b>in the order of the levels that gave them</b>, and the gate will know you.</p>
   </section>
 
   <div id="hint-slot"></div>
@@ -32,15 +32,15 @@
   "use strict";
 
   // BOSS GATE: the answer is never in the client. The server compares
-  // the player's letters against the marks it recorded for floors 1-4 —
+  // the player's letters against the marks it recorded for levels 1-4 —
   // un-Googlable by construction, and impossible without playing.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 5, title: "The Gatekeeper" });
+    var ok = await Overthink.initLevel({ level: 5, title: "The Gatekeeper" });
     if (!ok) return;
 
     Overthink.hints("hint-slot", [
-      "Your marks were revealed on each floor's victory screen.",
-      "Floors 1, 2, 3, 4 — in that order. Check the tower landing if you forgot."
+      "Your marks were revealed on each level's victory screen.",
+      "Levels 1, 2, 3, 4 — in that order. Check the tower landing if you forgot."
     ]);
 
     Overthink.mountBoss(5, {

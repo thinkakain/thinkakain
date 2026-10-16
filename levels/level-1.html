@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Floor 1 · Overthink</title>
+<title>Level 1 · Overthink</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="has-ticker">
@@ -12,9 +12,9 @@
 
 <header id="tower-header"></header>
 
-<main id="floor-main" class="floor-main">
+<main id="level-main" class="level-main">
   <div class="look-up-big">Look up.</div>
-  <p class="center muted">That is all this floor will tell you.</p>
+  <p class="center muted">That is all this level will tell you.</p>
 
   <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
@@ -33,7 +33,7 @@
   // Both cycle the same word list, fetched from the server — the page
   // source contains no answers. One frame of the cycle is the passcode.
   async function boot() {
-    var ok = await Overthink.initFloor({ floor: 1, title: "Look Up" });
+    var ok = await Overthink.initLevel({ level: 1, title: "Look Up" });
     if (!ok) return;
 
     var clues = await Overthink.clues(1).catch(function () { return {}; });
@@ -46,7 +46,7 @@
     function cycle() {
       var w = words[i % words.length];
       ticker.textContent = w;
-      document.title = "Floor 1 · " + w; // the tab itself becomes a clue
+      document.title = "Level 1 · " + w; // the tab itself becomes a clue
       i++;
     }
     cycle();
