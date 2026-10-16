@@ -19,7 +19,7 @@
   "use strict";
 
   var TOTAL_LEVELS = 30;
-  var BUILT_LEVELS = 9; // bump as levels are built, one at a time
+  var BUILT_LEVELS = 10; // bump as levels are built, one at a time
 
   var cfg = null;
   var progressCache = null;
@@ -212,7 +212,9 @@
       busy = true;
       btn.disabled = true;
       msg.textContent = "";
-      window.Backend.validateGuess(level, input.value).then(function (res) {
+      var guess = input.value;
+      if (opts.normalize) guess = opts.normalize(guess);
+      window.Backend.validateGuess(level, guess).then(function (res) {
         busy = false;
         btn.disabled = false;
         if (res && res.correct) {
