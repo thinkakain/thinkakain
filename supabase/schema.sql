@@ -8,12 +8,14 @@
 -- on the existing project.
 -- ============================================================
 
--- ---- clear the previous build ----
+-- ---- clear the previous build (old floor_* names and current level_* names) ----
 drop table if exists public.floor_marks;
 drop table if exists public.floor_clears;
 drop table if exists public.progress;
 drop table if exists public.profiles;
 drop table if exists public.floor_secrets;
+drop table if exists public.level_clears;
+drop table if exists public.level_secrets;
 
 -- ---------------- tables ----------------
 
