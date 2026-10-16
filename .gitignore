@@ -1,6 +1,7 @@
 # Overthink — never commit game answers.
 # seed.sql contains every passcode, mark, and secret. The repo is public.
 supabase/seed.sql
+supabase/full.sql
 
 # Local dev config (if you ever keep keys outside js/config.js)
 config.local.js
