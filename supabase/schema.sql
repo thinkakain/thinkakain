@@ -70,6 +70,18 @@ create policy "level_clears: owner read"
   on level_clears for select using (auth.uid() = user_id);
 
 -- ---------------- helpers & RPC ----------------
+-- The old build's functions used p_floor parameter names; Postgres
+-- refuses CREATE OR REPLACE when parameter names change, so drop
+-- the old signatures first.
+
+drop function if exists _record_clear(integer);
+drop function if exists get_floor_clues(integer);
+drop function if exists validate_guess(integer, text);
+drop function if exists validate_hold(integer, integer);
+drop function if exists validate_sequence(integer, integer[]);
+drop function if exists validate_boss(integer, text);
+-- (in case of a partial earlier run)
+drop function if exists get_level_clues(integer);
 
 -- Record a clear and bump highest_level.
 create or replace function _record_clear(p_level int)
