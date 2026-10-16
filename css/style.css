@@ -765,3 +765,30 @@ body.black-bg { background: #000; }
   user-select: text;
   cursor: text;
 }
+
+/* Level 3 — equation boxes */
+.eq-row { display: flex; gap: 6px; margin-bottom: 1.25rem; }
+.eq-box {
+  flex: 1 1 0; min-width: 0; aspect-ratio: 0.92;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.1rem, 5vw, 1.8rem); font-weight: 700;
+  background: #0d1424; color: #e8eefc;
+  border: 2px dashed #3a4a6b; border-radius: 10px;
+  cursor: pointer; padding: 0;
+}
+.eq-box.fixed {
+  border-style: solid; border-color: #6b7ea6; color: #9fb4dd;
+  background: #111a30; cursor: default;
+}
+.eq-box.filled { border-style: solid; border-color: #7fb2ff; }
+.eq-box.empty { cursor: default; }
+.tile-bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.tile {
+  min-width: 52px; padding: .6rem .8rem;
+  font-size: 1.4rem; font-weight: 700;
+  background: #1a2440; color: #e8eefc;
+  border: 2px solid #3a4a6b; border-radius: 10px; cursor: pointer;
+}
+.tile.used { visibility: hidden; }
+.eq-msg { min-height: 1.5em; text-align: center; color: #9fb4dd; margin-top: .75rem; }
+.eq-row.shake { animation: shake .4s; }

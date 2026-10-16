@@ -12,9 +12,10 @@
 
 <main id="level-main" class="level-main">
   <section class="puzzle-card">
-    <canvas id="dots" class="dots-canvas" aria-label="scattered dots"></canvas>
+    <div id="eq-row" class="eq-row" role="group" aria-label="equation"></div>
+    <div id="tile-bank" class="tile-bank" role="group" aria-label="tiles"></div>
+    <div id="eq-msg" class="eq-msg"></div>
   </section>
-  <div id="passcode-slot"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -25,44 +26,113 @@
 (function () {
   "use strict";
 
-  // Dot positions in percent coordinates. The puzzle is the dots
-  // themselves; the answer (their count) is verified server-side.
-  var DOTS = [
-    [12,18],[28,12],[44,20],[60,12],[76,20],
-    [16,46],[33,40],[37,44],[52,48],[68,42],[84,50],
-    [30,74],[55,70],[76,78]
+  // Slot 0 ("8") and slot 3 ("=") are prefilled and locked.
+  var FIXED = { 0: "8", 3: "=" };
+  // Bank tiles: display glyph + value sent to the server.
+  var TILES = [
+    { d: "6", v: "6" }, { d: "×", v: "x" },
+    { d: "3", v: "3" }, { d: "−", v: "-" },
+    { d: "7", v: "7" }, { d: "4", v: "4" },
+    { d: "+", v: "+" }, { d: "3", v: "3" }
   ];
 
-  function draw() {
-    var c = document.getElementById("dots");
-    var w = c.clientWidth, h = Math.round(w * 0.72);
-    var dpr = window.devicePixelRatio || 1;
-    c.width = w * dpr; c.height = h * dpr;
-    c.style.height = h + "px";
-    var x = c.getContext("2d");
-    x.scale(dpr, dpr);
-    x.clearRect(0, 0, w, h);
-    DOTS.forEach(function (p, i) {
-      var r = w * 0.022 * (0.85 + (i % 3) * 0.15);
-      x.beginPath();
-      x.arc(p[0] / 100 * w, p[1] / 100 * h, r, 0, Math.PI * 2);
-      x.fillStyle = "#cfe3ff";
-      x.shadowColor = "#7fb2ff";
-      x.shadowBlur = r * 1.6;
-      x.fill();
-      x.shadowBlur = 0;
+  var slots = new Array(10).fill(null); // tile index, or -1 for fixed
+  slots[0] = -1;
+  slots[3] = -1;
+
+  var rowEl = document.getElementById("eq-row");
+  var bankEl = document.getElementById("tile-bank");
+  var msgEl = document.getElementById("eq-msg");
+  var busy = false;
+
+  function slotValue(i) {
+    if (slots[i] === -1) return FIXED[i];
+    if (slots[i] === null) return null;
+    return TILES[slots[i]].v;
+  }
+
+  function render() {
+    rowEl.innerHTML = "";
+    for (var i = 0; i < 10; i++) {
+      (function (idx) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "eq-box";
+        if (slots[idx] === -1) {
+          b.classList.add("fixed");
+          b.textContent = FIXED[idx];
+          b.disabled = true;
+        } else if (slots[idx] !== null) {
+          b.classList.add("filled");
+          b.textContent = TILES[slots[idx]].d;
+          b.setAttribute("aria-label", "remove tile");
+          b.addEventListener("click", function () {
+            if (busy) return;
+            slots[idx] = null;
+            msgEl.textContent = "";
+            render();
+          });
+        } else {
+          b.classList.add("empty");
+          b.setAttribute("aria-label", "empty slot");
+        }
+        rowEl.appendChild(b);
+      })(i);
+    }
+
+    bankEl.innerHTML = "";
+    var placed = {};
+    slots.forEach(function (s) { if (s !== null && s !== -1) placed[s] = true; });
+    TILES.forEach(function (t, ti) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "tile" + (placed[ti] ? " used" : "");
+      b.textContent = t.d;
+      b.disabled = !!placed[ti];
+      b.setAttribute("aria-label", "tile " + t.d);
+      b.addEventListener("click", function () {
+        if (busy || placed[ti]) return;
+        for (var i = 0; i < 10; i++) {
+          if (slots[i] === null) { slots[i] = ti; break; }
+        }
+        msgEl.textContent = "";
+        render();
+        maybeSubmit();
+      });
+      bankEl.appendChild(b);
+    });
+  }
+
+  function isFull() {
+    for (var i = 0; i < 10; i++) if (slots[i] === null) return false;
+    return true;
+  }
+
+  function maybeSubmit() {
+    if (!isFull() || busy) return;
+    busy = true;
+    var expr = "";
+    for (var i = 0; i < 10; i++) expr += slotValue(i);
+    Thinkakain.submitEquation(3, expr).then(function (res) {
+      busy = false;
+      if (res && res.correct) {
+        Thinkakain.onSolved("The numbers balance.");
+      } else {
+        msgEl.textContent = "That doesn't add up.";
+        rowEl.classList.remove("shake");
+        void rowEl.offsetWidth;
+        rowEl.classList.add("shake");
+      }
+    }).catch(function (err) {
+      busy = false;
+      msgEl.textContent = window.Backend.friendlyError(err);
     });
   }
 
   async function boot() {
     var ok = await Thinkakain.initLevel({ level: 3 });
     if (!ok) return;
-    draw();
-    window.addEventListener("resize", draw);
-    Thinkakain.mountPasscode(3, {
-      successFlavor: "Counted true.",
-      wrongMessage: "Not quite. Try again."
-    });
+    render();
   }
   boot();
 })();

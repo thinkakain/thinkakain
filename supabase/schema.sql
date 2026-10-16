@@ -225,3 +225,105 @@ begin
   return jsonb_build_object('correct', ok);
 end;
 $$;
+
+-- Evaluate a simple arithmetic expression: non-negative integers
+-- with x, +, - (no parentheses). Standard precedence (x before
+-- +-). Returns NULL on malformed input.
+create or replace function _eval_simple(p_expr text)
+returns int
+language plpgsql
+immutable
+as $$
+declare
+  nums int[]  := array[]::int[];
+  ops  text[] := array[]::text[];
+  cur  text := '';
+  ch   text;
+  i    int;
+  n    int;
+begin
+  if p_expr is null or p_expr !~ '^[0-9]+([x+\-][0-9]+)*$' then
+    return null;
+  end if;
+
+  for i in 1..char_length(p_expr) loop
+    ch := substr(p_expr, i, 1);
+    if ch ~ '[0-9]' then
+      cur := cur || ch;
+    else
+      nums := nums || cur::int;
+      ops  := ops || ch;
+      cur  := '';
+    end if;
+  end loop;
+  nums := nums || cur::int;
+
+  -- multiplication first, left to right
+  i := 1;
+  while i <= coalesce(array_length(ops, 1), 0) loop
+    if ops[i] = 'x' then
+      nums[i] := nums[i] * nums[i+1];
+      nums := (select coalesce(array_agg(v order by o), array[]::int[])
+               from unnest(nums) with ordinality as t(v, o) where o <> i + 1);
+      ops  := (select coalesce(array_agg(v order by o), array[]::text[])
+               from unnest(ops) with ordinality as t(v, o) where o <> i);
+    else
+      i := i + 1;
+    end if;
+  end loop;
+
+  -- then addition / subtraction, left to right
+  n := nums[1];
+  for i in 1..coalesce(array_length(ops, 1), 0) loop
+    if ops[i] = '+' then n := n + nums[i+1];
+    else n := n - nums[i+1]; end if;
+  end loop;
+  return n;
+end;
+$$;
+
+-- Equation levels (e.g. tile-arranging). The player submits the full
+-- arrangement; it passes when (a) it uses exactly the puzzle's tiles
+-- (order-free multiset match against the stored answer) and (b) both
+-- sides evaluate to the same value. Any true arrangement counts.
+create or replace function validate_equation(p_level int, p_expr text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  e     text := regexp_replace(coalesce(p_expr, ''), '\s+', '', 'g');
+  s     level_secrets%rowtype;
+  parts text[];
+  lv    int;
+  rv    int;
+  ok    boolean := false;
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+  select * into s from level_secrets where level = p_level;
+  if s.answer is null then
+    return jsonb_build_object('correct', false);
+  end if;
+  if e !~ '^[0-9x+\-=]+$' then
+    return jsonb_build_object('correct', false);
+  end if;
+  if (select string_agg(c, '' order by c) from regexp_split_to_table(e, '') as c)
+     <> (select string_agg(c, '' order by c) from regexp_split_to_table(s.answer, '') as c) then
+    return jsonb_build_object('correct', false);
+  end if;
+  parts := string_to_array(e, '=');
+  if array_length(parts, 1) <> 2 then
+    return jsonb_build_object('correct', false);
+  end if;
+  lv := _eval_simple(parts[1]);
+  rv := _eval_simple(parts[2]);
+  if lv is not null and rv is not null and lv = rv then
+    ok := true;
+    perform _record_clear(p_level);
+  end if;
+  return jsonb_build_object('correct', ok);
+end;
+$$;

@@ -138,6 +138,13 @@
       var r = await db().rpc("validate_sequence", { p_level: level, p_seq: seq });
       if (r.error) throw r.error;
       return r.data;
+    },
+    // Equation levels: submits the full arrangement; the server checks
+    // tile multiset + mathematical truth. Returns {correct: bool}.
+    validateEquation: async function (level, expr) {
+      var r = await db().rpc("validate_equation", { p_level: level, p_expr: expr });
+      if (r.error) throw r.error;
+      return r.data;
     }
   };
 })();

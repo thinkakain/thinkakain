@@ -10,6 +10,7 @@
      Thinkakain.mountPasscode(level, {wrongMessage, successFlavor})
      await Thinkakain.submitHold(level, elapsedMs)  -> {correct}
      await Thinkakain.submitSequence(level, ids)    -> {correct}
+     await Thinkakain.submitEquation(level, expr)  -> {correct}
      Thinkakain.onSolved(flavorHtml)                -> success overlay
      await Thinkakain.clues(level)                  -> public clue payload
    ============================================================ */
@@ -234,6 +235,9 @@
   function submitSequence(level, ids) {
     return window.Backend.validateSequence(level, ids);
   }
+  function submitEquation(level, expr) {
+    return window.Backend.validateEquation(level, expr);
+  }
   function onSolved(flavorHtml) {
     showSuccess(flavorHtml);
   }
@@ -248,6 +252,7 @@
     mountPasscode: mountPasscode,
     submitHold: submitHold,
     submitSequence: submitSequence,
+    submitEquation: submitEquation,
     onSolved: onSolved,
     clues: clues,
     getProgress: getProgress,
