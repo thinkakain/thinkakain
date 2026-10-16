@@ -941,3 +941,11 @@ body.black-bg { background: #000; }
 
 /* Level 15 — audio player */
 .audio-player { width: 100%; max-width: 320px; margin: 0 auto; display: block; }
+
+/* Download button */
+.dl-btn {
+  display: inline-block; margin-top: 0.75rem; padding: 0.5rem 1.25rem;
+  color: #e8eefc; border: 1px solid #3a4a6b; border-radius: 6px;
+  text-decoration: none; font-size: 0.9rem;
+}
+.dl-btn:active { background: #1a2338; }
