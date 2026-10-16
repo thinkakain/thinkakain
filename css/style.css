@@ -834,3 +834,9 @@ body.black-bg { background: #000; }
   .rebus { flex-direction: column; }
   .rebus img { width: 86%; }
 }
+
+/* Level 7 — morse */
+.morse { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 1.5rem 0; }
+.morse .mdot { width: 16px; height: 16px; border-radius: 50%; background: #e8eefc; box-shadow: 0 0 10px rgba(232,238,252,.6); }
+.morse .mdash { width: 48px; height: 16px; border-radius: 8px; background: #e8eefc; box-shadow: 0 0 10px rgba(232,238,252,.6); }
+.morse .mgap { width: 26px; }
