@@ -6,14 +6,13 @@
 <title>Level 2 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="black-bg">
 
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <section class="puzzle-card photo-card">
-    <img class="level-photo" src="../assets/level-2.jpg"
-         alt="A dark stone wall at night">
+  <section class="puzzle-card blackout">
+    <div class="hidden-ink">INVISIBLE</div>
   </section>
   <div id="passcode-slot"></div>
 </main>
@@ -29,7 +28,7 @@
     var ok = await Thinkakain.initLevel({ level: 2 });
     if (!ok) return;
     Thinkakain.mountPasscode(2, {
-      successFlavor: "You looked closer. The tower approves.",
+      successFlavor: "Seen the unseen.",
       wrongMessage: "Not quite. Try again."
     });
   }
