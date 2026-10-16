@@ -82,6 +82,20 @@
     main.appendChild(card);
   }
 
+  function renderReviewHeader() {
+    var header = document.getElementById("tower-header");
+    if (!header) return;
+    header.innerHTML = "";
+    var back = make("a", "back-link", "&larr; Tower");
+    back.href = "../index.html?review=1";
+    var mid = make("div", "header-mid");
+    mid.appendChild(make("div", "level-label",
+      esc(cfg.levelLabel || ("Level " + cfg.level)) + " · REVIEW"));
+    if (cfg.title) mid.appendChild(make("div", "level-title", esc(cfg.title)));
+    header.appendChild(back);
+    header.appendChild(mid);
+  }
+
   /* ---------------- success ---------------- */
 
   function showSuccess(flavorHtml) {
@@ -127,6 +141,13 @@
         "<p class='muted'>The tower's backend isn't set up yet. " +
         "See README → One-time Supabase setup.</p>");
       return false;
+    }
+    // Review mode (?review=1): skip login and level locks so the
+    // designer can open any level page directly. Reveals no answers —
+    // every verdict still comes from the server.
+    if (/[?&]review=1/.test(location.search)) {
+      renderReviewHeader();
+      return true;
     }
     var session;
     try {

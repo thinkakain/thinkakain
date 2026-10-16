@@ -126,6 +126,11 @@
 
   /* ---------------- game ---------------- */
 
+  // Review mode (?review=1): skip login, every built level is open and
+  // links carry the flag forward. No answers are exposed — validation
+  // still happens server-side.
+  var REVIEW = /[?&]review=1/.test(location.search);
+
   function renderGame(p) {
     document.getElementById("player-name").textContent = p.username || "player";
 
@@ -134,15 +139,18 @@
     for (var n = 1; n <= 30; n++) {
       var cell = document.createElement("div");
       var sub;
-      if (p.cleared.indexOf(n) !== -1) {
+      var open = REVIEW ? n <= BUILT
+        : (p.cleared.indexOf(n) !== -1 || (n === p.highest_level && n <= BUILT));
+      if (p.cleared.indexOf(n) !== -1 && !REVIEW) {
         cell.className = "cell done";
         sub = '<span class="cell-sub">cleared</span>';
-      } else if (n === p.highest_level && n <= BUILT) {
+      } else if (open) {
         cell.className = "cell current";
         sub = '<span class="cell-sub">open</span>';
         (function (level) {
           cell.addEventListener("click", function () {
-            location.href = "levels/level-" + level + ".html";
+            location.href = "levels/level-" + level + ".html" +
+              (REVIEW ? "?review=1" : "");
           });
         })(n);
       } else {
@@ -160,7 +168,8 @@
     if (p.highest_level <= BUILT) {
       var a = document.createElement("a");
       a.className = "btn";
-      a.href = "levels/level-" + p.highest_level + ".html";
+      a.href = "levels/level-" + p.highest_level + ".html" +
+        (REVIEW ? "?review=1" : "");
       a.textContent = p.cleared.length === 0
         ? "Enter Level 1"
         : "Continue — Level " + p.highest_level;
@@ -182,6 +191,12 @@
   (async function boot() {
     if (!window.Backend.isConfigured()) {
       show(setupWarning);
+      return;
+    }
+    if (REVIEW) {
+      // Designer review: no login, everything built is open.
+      renderGame({ username: "reviewer", highest_level: 1, cleared: [] });
+      show(gamePanel);
       return;
     }
     var session = null;
