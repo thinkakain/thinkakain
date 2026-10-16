@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 10 · Thinkakain</title>
-<link rel="stylesheet" href="../css/style.css?v=4">
+<link rel="stylesheet" href="../css/style.css?v=5">
 </head>
 <body>
 
@@ -12,13 +12,10 @@
 
 <main id="level-main" class="level-main">
   <section class="puzzle-card">
-    <div class="color-grid">
-      <div class="swatch" style="background:#1A1A2E"></div><div class="swatch" style="background:#E94560"></div><div class="swatch" style="background:#0F3460"></div><div class="swatch" style="background:#F9ED69"></div><div class="swatch" style="background:#533483"></div><div class="swatch" style="background:#0D7377"></div>
-      <div class="swatch" style="background:#14FFEC"></div><div class="swatch" style="background:#F08A5D"></div><div class="swatch" style="background:#B83B5E"></div><div class="swatch" style="background:#6A2C70"></div><div class="swatch" style="background:#08D9D6"></div><div class="swatch" style="background:#252A34"></div>
-      <div class="swatch" style="background:#FF2E63"></div><div class="swatch" style="background:#EAEAEA"></div><div class="swatch" style="background:#222831"></div><div class="swatch" style="background:#393E46"></div><div class="swatch" style="background:#00ADB5"></div><div class="swatch" style="background:#EEEEEE"></div>
-      <div class="swatch" style="background:#FF5722"></div><div class="swatch" style="background:#4CAF50"></div><div class="swatch marked" style="background:#FF16AB"></div><div class="swatch" style="background:#9C27B0"></div><div class="swatch" style="background:#FFEB3B"></div><div class="swatch" style="background:#795548"></div>
-      <div class="swatch" style="background:#607D8B"></div><div class="swatch" style="background:#F44336"></div><div class="swatch" style="background:#00BCD4"></div><div class="swatch" style="background:#8BC34A"></div><div class="swatch" style="background:#FFC107"></div><div class="swatch" style="background:#3F51B5"></div>
-      <div class="swatch" style="background:#E91E63"></div><div class="swatch" style="background:#009688"></div><div class="swatch" style="background:#CDDC39"></div><div class="swatch" style="background:#FF9800"></div><div class="swatch" style="background:#2196F3"></div><div class="swatch" style="background:#16213E"></div>
+    <div class="flag">
+      <div class="stripe"><span>0000FF</span></div>
+      <div class="stripe"><span>FFFFFF</span></div>
+      <div class="stripe"><span>FF0000</span></div>
     </div>
   </section>
   <div id="passcode-slot"></div>
@@ -35,8 +32,7 @@
     var ok = await Thinkakain.initLevel({ level: 10 });
     if (!ok) return;
     Thinkakain.mountPasscode(10, {
-      normalize: function (v) { return v.replace(/^#/, ""); },
-      successFlavor: "Spot on.",
+      successFlavor: "Vive la France.",
       wrongMessage: "Not quite. Try again."
     });
   }
