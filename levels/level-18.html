@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 18 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css?v=7">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card">
+    <div class="braille-text">&#10270;&#10261;&#10277;&#10249;&#10259;</div>
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 18 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(18, {
+      successFlavor: "Feel it.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

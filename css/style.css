@@ -892,3 +892,35 @@ body.black-bg { background: #000; }
   font-size: 1.1rem; font-weight: 700; color: #e8eefc; letter-spacing: .05em;
 }
 .flag .stripe:last-child { border-right: none; }
+
+/* Levels 11-20 */
+.code-text {
+  text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 2rem; font-weight: 700; color: #e8eefc; letter-spacing: .25em;
+  padding: 1.5rem 0;
+}
+.flip-y { transform: rotate(180deg); }
+.dice-row { display: flex; gap: 12px; justify-content: center; padding: 1.2rem 0; flex-wrap: wrap; }
+.die {
+  width: 58px; height: 58px; background: #e8eefc; border-radius: 10px;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr);
+  padding: 9px; box-sizing: border-box;
+}
+.die .pip { border-radius: 50%; background: #1a1a2e; width: 85%; height: 85%; place-self: center; }
+.die .pip.blank { background: transparent; }
+.braille-text {
+  text-align: center; font-size: 2.6rem; color: #e8eefc; letter-spacing: .3em;
+  padding: 1.5rem 0;
+}
+.calc-display {
+  text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 2.4rem; font-weight: 700; color: #9df0c0; letter-spacing: .2em;
+  background: #0a0f1c; border: 2px solid #3a4a6b; border-radius: 10px;
+  max-width: 340px; margin: 0 auto; padding: 1rem 0.5rem;
+}
+.hangman-word {
+  text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 2rem; font-weight: 700; color: #e8eefc; letter-spacing: .3em;
+  padding: 1.5rem 0;
+}
+.morse .mwordgap { width: 52px; }

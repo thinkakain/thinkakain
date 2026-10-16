@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 14 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css?v=7">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card">
+    <div class="dice-row">
+      <div class="die">
+        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
+        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
+        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
+      </div>
+      <div class="die">
+        <div class="pip blank"></div><div class="pip blank"></div><div class="pip blank"></div>
+        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
+        <div class="pip blank"></div><div class="pip blank"></div><div class="pip blank"></div>
+      </div>
+      <div class="die">
+        <div class="pip"></div><div class="pip blank"></div><div class="pip blank"></div>
+        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
+        <div class="pip blank"></div><div class="pip blank"></div><div class="pip"></div>
+      </div>
+      <div class="die">
+        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
+        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
+        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
+      </div>
+    </div>
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 14 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(14, {
+      successFlavor: "Roll with it.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
