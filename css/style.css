@@ -654,30 +654,6 @@ input[type="range"]::-moz-range-thumb {
 }
 .signout-link:hover { color: var(--amber); }
 
-.marks-strip {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin: 14px 0 4px;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-.mark-chip {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  color: var(--amber);
-  font-size: 1rem;
-}
-.mark-chip.empty { color: #3a4568; }
-
 /* ---------- success overlay extras ---------- */
 .success-kicker {
   font-size: 1.5rem;
@@ -685,12 +661,6 @@ input[type="range"]::-moz-range-thumb {
   letter-spacing: 0.06em;
 }
 .success-flavor { color: var(--muted); margin-top: 8px; font-size: 1rem; }
-.success-mark { margin-top: 12px; font-size: 1.1rem; }
-.success-mark b {
-  color: var(--amber);
-  font-size: 1.5rem;
-  margin-left: 4px;
-}
 
 /* ---------- responsive ---------- */
 @media (min-width: 640px) {
@@ -766,3 +736,12 @@ input[type="range"]::-moz-range-thumb {
   border-color: var(--amber);
 }
 .tone-bar:disabled { cursor: default; }
+
+/* Level 1 — Backwards */
+.reversed-word {
+  font-size: 3rem;
+  letter-spacing: .5rem;
+  text-align: center;
+  padding: 3rem 1rem;
+  user-select: none;
+}

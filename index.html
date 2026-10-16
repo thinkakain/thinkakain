@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thinkakain</title>
-<meta name="description" content="Thinkakain: climb 30 levels of original puzzles. Every 5th level is a boss gate built from your own answers.">
+<meta name="description" content="Thinkakain: climb 30 levels of original puzzles.">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -57,7 +57,7 @@
 
     <div class="level-grid" id="grid"></div>
     <div class="continue-wrap" id="continue-wrap"></div>
-    <p class="footer-note">Levels 1&ndash;10 are open. The tower grows taller soon.</p>
+    <p class="footer-note">The tower grows taller soon.</p>
   </div>
 </main>
 
@@ -68,7 +68,7 @@
 (function () {
   "use strict";
 
-  var BUILT = 0; // levels built so far — bump as each new level ships
+  var BUILT = 1; // levels built so far — bump as each new level ships
   var LOCK_SVG = '<svg class="lock-icon" viewBox="0 0 24 24">' +
     '<rect x="5" y="11" width="14" height="9" rx="2"/>' +
     '<path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';

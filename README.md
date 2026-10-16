@@ -4,112 +4,117 @@ A static, no-build-step puzzle game (vanilla HTML/CSS/JS) hosted on **GitHub Pag
 with **Supabase** as the server-authoritative backend: auth, progress, and every
 answer live server-side, so view-source reveals nothing.
 
+Live at **https://thinkakain.github.io/thinkakain/** (repo `thinkakain/thinkakain`).
+
 ## How it works
 
-- Each level is one self-contained page (`levels/level-N.html`). The player
-  enters a passcode or performs an interactive action (hold timing, star-click
-  sequence) to advance.
+- Each level is one self-contained page (`levels/level-N.html`), built one at a
+  time from [`levels/_template.html`](levels/_template.html).
 - **Answers never ship in client code.** All validation runs in Postgres
-  `SECURITY DEFINER` functions; the `floor_secrets` table has no client read
+  `SECURITY DEFINER` functions; the `level_secrets` table has no client read
   access at all (RLS enabled, zero policies).
-- Every 5th level is a **boss gate** validated against the marks the *server*
-  recorded for the player's previous four levels — un-Googlable by construction.
 - Players register with **username + password** (Supabase Auth derives an
   internal `<username>@thinkakain.app` email; players never see it). Progress
-  (`highest_floor`, cleared levels, marks) is server-side and resumes on any
-  device. Marks are also mirrored to localStorage purely as a convenience
-  display — never trusted for validation.
+  (`highest_level`, cleared levels) is server-side and resumes on any device.
+- `BUILT_LEVELS` in `js/engine.js` and the `BUILT` constant in `index.html`
+  track how many levels exist — bump both each time a level ships.
+
+## Design rules (standing)
+
+- **No explanatory text** on levels. No hint buttons. The clue lives in the
+  page itself — the player figures out the rest through trial and error.
+- **Every level is standalone.** Never reuse a previous level's answer.
+- Passwords are hashed by Supabase Auth and never stored by us; passcodes live
+  only in `level_secrets` and are checked server-side.
 
 ## One-time Supabase setup
 
 1. **Create a project** at [supabase.com](https://supabase.com) (free tier is fine).
-   Note the project URL and the **anon public** key
-   (Project Settings → API). Never use the `service_role` key in this repo.
+   Note the project URL and the **publishable** key (Project Settings → API).
+   Never use the `service_role` key in this repo.
 
 2. **Run the schema.** In the Supabase dashboard go to
    Database → SQL → New query, paste the entire contents of
    [`supabase/schema.sql`](supabase/schema.sql), and run it.
-   This creates tables, Row Level Security policies, and the RPC functions.
+   It wipes the previous build's tables first, then creates the fresh
+   tables, Row Level Security policies, and RPC functions.
    It contains **no secrets** and is safe to commit.
 
-3. **Seed the secrets — once.** Open [`supabase/seed.sql`](supabase/seed.sql),
-   paste it into a **new** SQL editor query, and run it. Then **delete your
-   local copy** (it is already in `.gitignore`). Never commit it — the repo
-   is public. Verify in the Table editor that `floor_secrets` has 10 rows.
+3. **Seed the secrets — per level, as built.** Open
+   [`supabase/seed.sql`](supabase/seed.sql) (git-ignored — never commit it),
+   add one row for the new level (see the examples in the file), paste it into
+   a SQL editor query, and run it. The file is idempotent: re-running is safe.
+   Verify in the Table editor that `level_secrets` has one row per built level.
 
 4. **Wire up the client.** Copy your values into [`js/config.js`](js/config.js):
    ```js
    window.ThinkakainConfig = {
      SUPABASE_URL: "https://xyzcompany.supabase.co",
-     SUPABASE_ANON_KEY: "eyJhbGciOi..."
+     SUPABASE_ANON_KEY: "sb_publishable_..."
    };
    ```
-   The anon key is public by design — RLS protects everything.
+   The publishable key is public by design — RLS protects everything.
 
 5. **Auth settings.** In the dashboard go to Authentication → Providers →
    Email and make sure **"Confirm email" is OFF** (the derived
    `@thinkakain.app` addresses can't receive mail). Everything else can stay
    default.
 
-6. **Deploy to GitHub Pages.** Push this folder's contents to a repo
-   (as the repo root, or under `docs/`), then
-   Settings → Pages → Deploy from a branch → `main` / `/root` (or `/docs`).
-   The game is fully static — no build step.
+## Adding a level
 
-7. **Smoke test.** Open the site, create an account, clear Level 1
-   (watch the tab title), and confirm the tower marks you and Level 2 unlocks.
-
-## Adding levels 11–30
-
-1. Copy [`levels/_template.html`](levels/_template.html) → `levels/level-11.html`.
-2. Set the level number/title in `initLevel`, write the puzzle, add two hints,
-   and pick the resolver:
-   - passcode → `Thinkakain.mountPasscode(11, {...})`
-   - boss gate → `Thinkakain.mountBoss(11, {...})`
-   - timed hold → `Thinkakain.submitHold(11, ms)` then `Thinkakain.onSolved(res.mark, …)`
-   - click sequence → `Thinkakain.submitSequence(11, ids)` then `Thinkakain.onSolved(res.mark, …)`
-3. **Add the secrets** to `floor_secrets` (SQL editor — never in the repo):
+1. Copy [`levels/_template.html`](levels/_template.html) → `levels/level-N.html`.
+2. Set the level number/title in `initLevel`, build the puzzle inside
+   `<main id="level-main">`, and pick ONE resolver:
+   - passcode → `Thinkakain.mountPasscode(N, {...})`
+   - timed hold → `Thinkakain.submitHold(N, ms)` then `Thinkakain.onSolved(…)`
+   - click sequence → `Thinkakain.submitSequence(N, ids)` then `Thinkakain.onSolved(…)`
+3. **Add the secret** to `level_secrets` via the SQL editor — never in the repo:
    ```sql
-   insert into floor_secrets (level, answer, mark, clues) values
-     (11, 'YOURCODE', 'X', '{}');
+   insert into level_secrets (level, answer)
+     values (1, 'YOURCODE')
+     on conflict (level) do update set answer = excluded.answer;
    ```
-   For hold levels set `hold_answer` (word; hold seconds = its letter count).
-   For sequence levels set `sequence` (int array). For public display data
-   (ticker words, canvas words, story HTML…) put it in `clues` as JSON —
-   fetch it client-side with `Thinkakain.clues(11)`.
+   For hold levels set `hold_answer` (word; hold seconds = its letter count,
+   ±400 ms). For sequence levels set `sequence` (int array of the click order).
+   For public display data (ticker words, canvas data — never answers) put it
+   in `clues` as JSON and fetch it client-side with `Thinkakain.clues(N)`.
 4. Bump `BUILT_LEVELS` in `js/engine.js` **and** the `BUILT` constant in
    `index.html` so the level grid, Continue button, and Next-level links
    include the new level.
-5. Boss levels: every 5th level should call `mountBoss` — the
-   `validate_boss` function automatically checks marks from the previous
-   four levels, no per-level configuration needed.
+
+## Push discipline
+
+Pushes go through `gh_push.py`, which replaces the whole repo tree from local
+files — so **always push with `--preserve js/config.js`**. That flag fetches
+the remote copy of the config (which holds Nopy's pasted publishable key)
+before building the tree, so his key is never overwritten. Overwriting it once
+took the live site down as "Tower offline" — it must not recur.
 
 ## File map
 
 | Path | What |
 |---|---|
-| `index.html` | Landing: login/register gate, how-to-play, level grid, marks, Continue |
-| `levels/level-N.html` | One self-contained puzzle page per level (1–10 built) |
-| `levels/_template.html` | Copy-paste template for levels 11–30 |
+| `index.html` | Landing: login/register gate, level grid, Continue |
+| `levels/level-N.html` | One self-contained puzzle page per level (0 built so far) |
+| `levels/_template.html` | Copy-paste template for new levels |
 | `css/style.css` | Shared dark tower aesthetic, mobile-first |
-| `js/config.js` | Supabase URL + anon key (you fill these in) |
+| `js/config.js` | Supabase URL + publishable key (Nopy fills in; preserved on push) |
 | `js/backend.js` | Supabase data layer: auth, progress, clue fetch, RPC validators |
-| `js/engine.js` | UI engine: headers, hints, forms, success overlay (zero answers) |
+| `js/engine.js` | UI engine: headers, passcode forms, success overlay (zero answers) |
 | `supabase/schema.sql` | Tables + RLS + RPC functions — safe to commit |
-| `supabase/seed.sql` | Answers/marks/sequences — **git-ignored, run once, then delete** |
+| `supabase/seed.sql` | Answers/sequences — **git-ignored, never commit** |
 | `.gitignore` | Keeps `seed.sql` (and `.env`) out of the repo |
 
 ## Security notes
 
-- `floor_secrets` has RLS enabled with **no policies**: clients cannot
+- `level_secrets` has RLS enabled with **no policies**: clients cannot
   SELECT/INSERT/UPDATE/DELETE it, period. Only `SECURITY DEFINER` functions
   touch it.
-- `floor_marks` / `floor_clears` are written exclusively by those functions;
-  clients have read-only access to their own rows.
+- `level_clears` rows are written exclusively by those functions; clients have
+  read-only access to their own rows.
 - `progress` allows owners to read and update their own row (cosmetic level
-  grid). This grants no answers: boss gates re-validate against server-side
-  marks, and every level's verdict comes from an RPC.
+  grid). This grants no answers: every level's verdict comes from an RPC.
 - Supplied `clues` payloads are public page content by design (ticker words,
-  canvas words, the woven story). A determined player can always read what
-  the page shows them — the protection is against static answer harvesting
-  from view-source or the public repo.
+  canvas data, story text). A determined player can always read what the page
+  shows them — the protection is against static answer harvesting from
+  view-source or the public repo.
