@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 7 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card photo-card">
+    <div class="rebus">
+      <img src="../assets/level-7a.jpg" alt="">
+      <span class="plus">+</span>
+      <img src="../assets/level-7b.jpg" alt="">
+    </div>
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 7 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(7, {
+      successFlavor: "Sweet.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

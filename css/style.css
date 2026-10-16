@@ -825,3 +825,12 @@ body.black-bg { background: #000; }
   display: block; margin: 0 auto; background: none; border: 2px solid #3a4a6b;
   color: #9fb4dd; border-radius: 10px; font-size: 1.3rem; padding: .3rem .8rem; cursor: pointer;
 }
+
+/* Level 7 — rebus */
+.rebus { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.rebus img { width: 44%; border-radius: 12px; }
+.rebus .plus { font-size: 2rem; font-weight: 800; color: #9fb4dd; }
+@media (max-width: 520px) {
+  .rebus { flex-direction: column; }
+  .rebus img { width: 86%; }
+}
