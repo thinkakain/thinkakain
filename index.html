@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overthink — a 30-floor puzzle tower</title>
+<meta name="description" content="Overthink: climb 30 floors of original puzzles. Every 5th floor is a boss gate built from your own answers.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<main class="tower-main">
+  <div class="hero">
+    <h1 class="game-title">OVERTHINK</h1>
+    <p class="tagline">A 30-floor puzzle tower. The answers are never on the internet.</p>
+  </div>
+
+  <!-- Shown when js/config.js still has empty placeholders -->
+  <div class="setup-warning" id="setup-warning" hidden>
+    <h2>Tower offline</h2>
+    <p>The game backend isn't connected yet. Finish the one-time setup in
+       <b>README → One-time Supabase setup</b>, then fill in
+       <code>js/config.js</code>.</p>
+  </div>
+
+  <!-- Shown when there is no signed-in player -->
+  <section class="puzzle-card auth-card" id="auth-panel" hidden>
+    <div class="auth-tabs">
+      <button type="button" class="btn active" id="tab-signin">Sign in</button>
+      <button type="button" class="btn btn-ghost" id="tab-register">Create account</button>
+    </div>
+    <form id="auth-form" autocomplete="off">
+      <div class="field">
+        <label for="auth-username">Username</label>
+        <input id="auth-username" type="text" placeholder="pick_a_name"
+               autocomplete="username" spellcheck="false" maxlength="16">
+      </div>
+      <div class="field">
+        <label for="auth-password">Password</label>
+        <input id="auth-password" type="password" placeholder="••••••••"
+               autocomplete="current-password" minlength="6">
+      </div>
+      <button type="submit" class="btn auth-full" id="auth-submit">Sign in</button>
+      <div class="auth-error" id="auth-error"></div>
+    </form>
+    <p class="muted" style="font-size:0.82rem;margin:10px 0 0">
+      Username: 3–16 characters, letters/numbers/underscore. Your progress
+      saves to your account and resumes on any device.
+    </p>
+  </section>
+
+  <!-- Shown when signed in -->
+  <div id="game-panel" hidden>
+    <section class="puzzle-card howto">
+      <h2>How to play</h2>
+      <p>Climb the tower one floor at a time. Every floor hides a puzzle — sometimes the answer is a passcode, sometimes the page itself wants you to <b>do</b> something.</p>
+      <p>Look closely: every clue lives inside the page you're on. Your brain, your eyes, and a little suspicion are the only tools you need.</p>
+      <p>Every 5th floor is a <b>gate</b>. It opens only with the marks you earned on the four floors before it — the tower reveals each mark on its victory screen, and they're listed below.</p>
+    </section>
+
+    <div class="player-bar">
+      <span class="player-name">Playing as <b id="player-name">…</b></span>
+      <button type="button" class="signout-link" id="signout">Sign out</button>
+    </div>
+
+    <div class="marks-strip" id="marks-strip"></div>
+    <div class="floor-grid" id="grid"></div>
+    <div class="continue-wrap" id="continue-wrap"></div>
+    <p class="footer-note">Floors 1&ndash;10 are open. The tower grows taller soon.</p>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/backend.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var BUILT = 10;
+  var LOCK_SVG = '<svg class="lock-icon" viewBox="0 0 24 24">' +
+    '<rect x="5" y="11" width="14" height="9" rx="2"/>' +
+    '<path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+
+  var setupWarning = document.getElementById("setup-warning");
+  var authPanel = document.getElementById("auth-panel");
+  var gamePanel = document.getElementById("game-panel");
+
+  function show(el) { el.hidden = false; }
+  function hide(el) { el.hidden = true; }
+
+  /* ---------------- auth ---------------- */
+
+  var mode = "signin";
+  var tabSignin = document.getElementById("tab-signin");
+  var tabRegister = document.getElementById("tab-register");
+  var authForm = document.getElementById("auth-form");
+  var authUser = document.getElementById("auth-username");
+  var authPass = document.getElementById("auth-password");
+  var authSubmit = document.getElementById("auth-submit");
+  var authError = document.getElementById("auth-error");
+
+  function setMode(m) {
+    mode = m;
+    tabSignin.classList.toggle("active", m === "signin");
+    tabSignin.classList.toggle("btn-ghost", m !== "signin");
+    tabRegister.classList.toggle("active", m === "register");
+    tabRegister.classList.toggle("btn-ghost", m !== "register");
+    authSubmit.textContent = m === "register" ? "Create account" : "Sign in";
+    authError.textContent = "";
+  }
+  tabSignin.addEventListener("click", function () { setMode("signin"); });
+  tabRegister.addEventListener("click", function () { setMode("register"); });
+
+  authForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    authError.textContent = "";
+    authSubmit.disabled = true;
+    var fn = mode === "register" ? window.Backend.signUp : window.Backend.signIn;
+    fn(authUser.value, authPass.value).then(function () {
+      location.reload(); // session persisted — boot straight into the game
+    }).catch(function (err) {
+      authSubmit.disabled = false;
+      authError.textContent = window.Backend.friendlyError(err);
+    });
+  });
+
+  /* ---------------- game ---------------- */
+
+  function renderGame(p) {
+    document.getElementById("player-name").textContent = p.username || "player";
+
+    // marks strip: earned marks for floors 1..10, blanks for the rest
+    var strip = document.getElementById("marks-strip");
+    strip.innerHTML = "";
+    strip.appendChild(document.createTextNode("Marks: "));
+    var serverMarks = p.marks || {};
+    var localMarks = {};
+    try { localMarks = JSON.parse(localStorage.getItem("overthink_marks") || "{}"); }
+    catch (e) {}
+    for (var f = 1; f <= BUILT; f++) {
+      var chip = document.createElement("span");
+      var mk = serverMarks[f] || localMarks[f];
+      chip.className = "mark-chip" + (mk ? "" : " empty");
+      chip.textContent = mk || "·";
+      chip.title = "Floor " + f;
+      strip.appendChild(chip);
+    }
+
+    var grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    for (var n = 1; n <= 30; n++) {
+      var cell = document.createElement("div");
+      var sub;
+      if (p.cleared.indexOf(n) !== -1) {
+        cell.className = "cell done";
+        sub = '<span class="cell-sub">cleared</span>';
+      } else if (n === p.highest_floor && n <= BUILT) {
+        cell.className = "cell current";
+        sub = '<span class="cell-sub">open</span>';
+        (function (floor) {
+          cell.addEventListener("click", function () {
+            location.href = "floors/floor-" + floor + ".html";
+          });
+        })(n);
+      } else {
+        cell.className = "cell locked";
+        sub = n > BUILT
+          ? '<span class="cell-sub">soon</span>'
+          : '<span class="cell-sub">' + LOCK_SVG + "</span>";
+      }
+      cell.innerHTML = '<span class="cell-num">' + n + "</span>" + sub;
+      grid.appendChild(cell);
+    }
+
+    var wrap = document.getElementById("continue-wrap");
+    wrap.innerHTML = "";
+    if (p.highest_floor <= BUILT) {
+      var a = document.createElement("a");
+      a.className = "btn";
+      a.href = "floors/floor-" + p.highest_floor + ".html";
+      a.textContent = p.cleared.length === 0
+        ? "Enter Floor 1"
+        : "Continue — Floor " + p.highest_floor;
+      wrap.appendChild(a);
+    } else {
+      var done = document.createElement("p");
+      done.className = "muted";
+      done.textContent = "You cleared every open floor. The tower grows taller soon.";
+      wrap.appendChild(done);
+    }
+  }
+
+  document.getElementById("signout").addEventListener("click", function () {
+    window.Backend.signOut().then(function () { location.reload(); });
+  });
+
+  /* ---------------- boot ---------------- */
+
+  (async function boot() {
+    if (!window.Backend.isConfigured()) {
+      show(setupWarning);
+      return;
+    }
+    var session = null;
+    try {
+      session = await window.Backend.getSession();
+    } catch (e) {
+      show(setupWarning);
+      setupWarning.querySelector("p").textContent =
+        "Could not reach Supabase: " + e.message;
+      return;
+    }
+    if (!session) {
+      show(authPanel);
+      return;
+    }
+    try {
+      var p = await window.Backend.fetchProgress();
+      renderGame(p);
+      show(gamePanel);
+    } catch (e) {
+      show(authPanel);
+      authError.textContent = window.Backend.friendlyError(e);
+    }
+  })();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor 2 · Overthink</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="floor-main" class="floor-main">
+
+  <section class="puzzle-card">
+    <p>You stand on a floor that cannot decide what number it is.</p>
+    <div class="plaque">FLOOR 3</div>
+    <p>The plaque by the stairs says <b>Floor 3</b>. Plaques, however, are just words on a wall.</p>
+    <div class="fake-progress">
+      <div class="fake-bar"><div class="fake-fill"></div></div>
+      <div class="fake-text">Progress: 2/30 floors</div>
+    </div>
+    <p><b>Enter the floor you are actually on.</b></p>
+  </section>
+
+  <div id="hint-slot"></div>
+  <div id="passcode-slot"></div>
+
+  <div class="floor-footer">&mdash; Floor 2 &mdash;</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // The page lies: the header claims "Floor 3" (via floorLabel) and the
+  // engine's real progress bar is hidden so the fake "2/30" bar and the
+  // footer ("Floor 2") can tell the truth. The real answer is checked
+  // server-side; unlock logic uses the true floor number (2).
+  async function boot() {
+    var ok = await Overthink.initFloor({
+      floor: 2,
+      title: "The Wrong Number",
+      floorLabel: "Floor 3",
+      hideProgress: true
+    });
+    if (!ok) return;
+
+    Overthink.hints("hint-slot", [
+      "Plaques can lie. Something else here tells the truth.",
+      "The progress bar and the footer agree with each other. Trust them."
+    ]);
+
+    Overthink.mountPasscode(2, {
+      successFlavor: "Sharp eyes.",
+      wrongMessage: "The plaque is lying to you. Look at what else the page says."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

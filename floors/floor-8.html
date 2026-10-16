@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor 8 · Overthink</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="floor-main" class="floor-main">
+
+  <section class="puzzle-card">
+    <p class="riddle">
+      I follow you at noon and flee at night;<br>
+      the higher the sun, the shorter my height.<br>
+      I weigh nothing, yet I grow &mdash;<br>
+      speak my name, then let it go.
+    </p>
+    <p class="center muted">Answer the riddle &mdash; then <b>press and hold</b> the button for exactly as many seconds as the answer has letters. The tower judges your timing. Release too early or too late and the floor resets its patience.</p>
+    <div class="hold-wrap">
+      <button type="button" id="hold-btn">HOLD</button>
+      <div class="hold-timer" id="hold-timer">0.0s</div>
+      <div class="hold-msg" id="hold-msg"></div>
+    </div>
+    <p class="center muted" style="font-size:0.8rem">Tip: on PC you can also hold the Space key while the button is focused.</p>
+  </section>
+
+  <div id="hint-slot"></div>
+  <!-- No passcode: this floor is cleared by the timed hold, judged server-side. -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // The riddle's answer and the required hold duration live ONLY on the
+  // server. The client measures milliseconds and submits them; the
+  // server compares against its own secret. Nothing to view-source here.
+  async function boot() {
+    var ok = await Overthink.initFloor({ floor: 8, title: "Hold On" });
+    if (!ok) return;
+
+    var btn = document.getElementById("hold-btn");
+    var timerEl = document.getElementById("hold-timer");
+    var msg = document.getElementById("hold-msg");
+    var startT = 0, rafId = 0, busy = false;
+
+    function tick() {
+      timerEl.textContent = ((performance.now() - startT) / 1000).toFixed(1) + "s";
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function begin(e) {
+      if (busy) return;
+      if (e && e.cancelable) e.preventDefault();
+      startT = performance.now();
+      msg.textContent = "";
+      timerEl.textContent = "0.0s";
+      tick();
+    }
+
+    function end() {
+      if (!startT || busy) return; // not holding, or a verdict is in flight
+      cancelAnimationFrame(rafId);
+      var ms = performance.now() - startT;
+      startT = 0;
+      timerEl.textContent = (ms / 1000).toFixed(1) + "s";
+      busy = true;
+      Overthink.submitHold(8, ms).then(function (res) {
+        busy = false;
+        if (res && res.correct) {
+          Overthink.onSolved(res.mark, "You held your ground.");
+        } else {
+          msg.textContent = "Not quite. The riddle names the seconds.";
+          btn.classList.remove("shake");
+          void btn.offsetWidth;
+          btn.classList.add("shake");
+        }
+      }).catch(function (err) {
+        busy = false;
+        msg.textContent = window.Backend.friendlyError(err);
+      });
+    }
+
+    function cancel() {
+      startT = 0;
+      cancelAnimationFrame(rafId);
+      timerEl.textContent = "0.0s";
+    }
+
+    btn.addEventListener("pointerdown", begin);
+    btn.addEventListener("pointerup", end);
+    // If the pointer slides off or the gesture is interrupted, end safely.
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", cancel);
+    // Block long-press context menu / scroll-start on touch devices.
+    btn.addEventListener("touchstart", function (e) { e.preventDefault(); }, { passive: false });
+    btn.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+    // Keyboard alternative for PC.
+    btn.addEventListener("keydown", function (e) {
+      if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); begin(e); }
+    });
+    btn.addEventListener("keyup", function (e) {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); end(); }
+    });
+
+    Overthink.hints("hint-slot", [
+      "The answer is something the sun makes.",
+      "Count the letters in your answer — that is your number of seconds."
+    ]);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

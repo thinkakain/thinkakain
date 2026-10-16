@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor 4 · Overthink</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="floor-main" class="floor-main">
+
+  <section class="puzzle-card">
+    <p>This floor looks different depending on how you look at it.</p>
+    <p class="muted">Combine what both views show you.</p>
+    <div class="view-toggle">
+      <button type="button" class="btn active" id="btn-desktop">Desktop view</button>
+      <button type="button" class="btn btn-ghost" id="btn-mobile">Mobile view</button>
+    </div>
+    <!-- The container width (not the real viewport) switches, so the
+         puzzle works identically on phones and PCs. The fragments are
+         injected from the server — view-source shows nothing. -->
+    <div id="views" class="view-desktop">
+      <div class="pane wide-pane"><span class="code-frag" id="frag-wide"></span></div>
+      <div class="pane narrow-pane"><span class="code-frag" id="frag-narrow"></span></div>
+    </div>
+  </section>
+
+  <div id="hint-slot"></div>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  async function boot() {
+    var ok = await Overthink.initFloor({ floor: 4, title: "Two Sizes" });
+    if (!ok) return;
+
+    var clues = await Overthink.clues(4).catch(function () { return {}; });
+    document.getElementById("frag-wide").textContent = clues.frag_wide || "";
+    document.getElementById("frag-narrow").textContent = clues.frag_narrow || "";
+
+    var views = document.getElementById("views");
+    var bDesk = document.getElementById("btn-desktop");
+    var bMob = document.getElementById("btn-mobile");
+
+    function setView(which) {
+      views.classList.toggle("view-desktop", which === "desktop");
+      views.classList.toggle("view-mobile", which === "mobile");
+      bDesk.classList.toggle("active", which === "desktop");
+      bMob.classList.toggle("active", which === "mobile");
+      bDesk.classList.toggle("btn-ghost", which !== "desktop");
+      bMob.classList.toggle("btn-ghost", which !== "mobile");
+    }
+    bDesk.addEventListener("click", function () { setView("desktop"); });
+    bMob.addEventListener("click", function () { setView("mobile"); });
+
+    Overthink.hints("hint-slot", [
+      "Switch views and read each half.",
+      "Wide shows the first half, narrow shows the second."
+    ]);
+
+    Overthink.mountPasscode(4, {
+      successFlavor: "Seeing double pays off.",
+      wrongMessage: "Put the two halves together, in view order."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

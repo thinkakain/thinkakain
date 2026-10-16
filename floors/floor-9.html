@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor 9 · Overthink</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="floor-main" class="floor-main">
+
+  <section class="puzzle-card">
+    <p>The hunter chases the <b>bull</b> across the sky, and his <b>dog</b> follows at his heel.</p>
+    <p class="muted">Click the stars of the hunt in the order of the story: the bull, the hunter, the dog. A wrong star — or the wrong order — and the sky resets.</p>
+    <div id="sky-wrap"><canvas id="sky"></canvas></div>
+    <div class="sky-note" id="sky-note"></div>
+  </section>
+
+  <div id="hint-slot"></div>
+  <!-- No passcode: the click sequence is validated server-side. -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // The starfield layout is deterministic (same on every device), but the
+  // stars carry NO roles in client code — only positions and ids. Which
+  // star is the bull, the hunter, the dog is for the player to deduce
+  // from the arrangement; the server holds the true sequence.
+  async function boot() {
+    var ok = await Overthink.initFloor({ floor: 9, title: "The Hunter" });
+    if (!ok) return;
+
+    var canvas = document.getElementById("sky");
+    var ctx = canvas.getContext("2d");
+    var note = document.getElementById("sky-note");
+    var wrap = document.getElementById("sky-wrap");
+
+    function mulberry32(a) {
+      return function () {
+        a |= 0; a = (a + 0x6D2B79F5) | 0;
+        var t = Math.imul(a ^ (a >>> 15), 1 | a);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    var rng = mulberry32(20261015);
+
+    // id 0-6: the seven bright stars (positions only — the client
+    // knows nothing about which is which); id 7+: dim background stars.
+    // The arrangement on screen is the clue; the true sequence lives
+    // server-side.
+    var stars = [
+      { id: 0, x: 0.30,  y: 0.36,  r: 3.4, bright: true },
+      { id: 1, x: 0.47,  y: 0.43,  r: 3.4, bright: true },
+      { id: 2, x: 0.535, y: 0.455, r: 3.4, bright: true },
+      { id: 3, x: 0.14, y: 0.70, r: 2.8, bright: true },
+      { id: 4, x: 0.80, y: 0.24, r: 2.8, bright: true },
+      { id: 5, x: 0.70, y: 0.76, r: 2.8, bright: true },
+      { id: 6, x: 0.12, y: 0.18, r: 2.8, bright: true }
+    ];
+    for (var i = 0; i < 33; i++) {
+      stars.push({ id: 7 + i, x: rng(), y: rng(),
+                   r: 0.8 + rng() * 1.4, bright: false });
+    }
+
+    var clicked = []; // star ids, in click order
+    var busy = false;
+
+    function starById(id) {
+      for (var i = 0; i < stars.length; i++) {
+        if (stars[i].id === id) return stars[i];
+      }
+      return null;
+    }
+
+    function draw() {
+      var w = canvas.clientWidth, h = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+      var i, s, px, py;
+      // constellation lines between clicked stars, in click order
+      if (clicked.length > 1) {
+        ctx.strokeStyle = "#f2a93b";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (i = 0; i < clicked.length; i++) {
+          s = starById(clicked[i]);
+          px = s.x * w; py = s.y * h;
+          if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      for (i = 0; i < stars.length; i++) {
+        s = stars[i];
+        px = s.x * w; py = s.y * h;
+        ctx.beginPath();
+        ctx.arc(px, py, s.r, 0, Math.PI * 2);
+        if (s.bright) {
+          ctx.fillStyle = "#ffffff";
+          ctx.shadowColor = "#ffe9b0";
+          ctx.shadowBlur = 12;
+        } else {
+          ctx.fillStyle = "rgba(200,210,240,0.55)";
+          ctx.shadowBlur = 0;
+        }
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        if (clicked.indexOf(s.id) !== -1) {
+          ctx.beginPath();
+          ctx.arc(px, py, s.r + 7, 0, Math.PI * 2);
+          ctx.strokeStyle = "#f2a93b";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+    }
+
+    function fit() {
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.clientWidth * dpr;
+      canvas.height = canvas.clientHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw();
+    }
+
+    function reset(msg) {
+      clicked = [];
+      draw();
+      note.textContent = msg;
+      wrap.classList.remove("shake");
+      void wrap.offsetWidth;
+      wrap.classList.add("shake");
+    }
+
+    canvas.addEventListener("pointerdown", function (e) {
+      if (busy) return;
+      var rect = canvas.getBoundingClientRect();
+      var px = e.clientX - rect.left, py = e.clientY - rect.top;
+      var hit = null, best = Infinity, i;
+      for (i = 0; i < stars.length; i++) {
+        var dx = px - stars[i].x * rect.width;
+        var dy = py - stars[i].y * rect.height;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < best) { best = d; hit = stars[i]; }
+      }
+      if (!hit || best > 30) return; // missed every star: ignore, don't punish
+      if (clicked.indexOf(hit.id) !== -1) return; // already chosen
+      clicked.push(hit.id);
+      note.textContent = "";
+      draw();
+      if (clicked.length === 3) {
+        busy = true;
+        Overthink.submitSequence(9, clicked).then(function (res) {
+          busy = false;
+          if (res && res.correct) {
+            Overthink.onSolved(res.mark, "The hunt is complete.");
+          } else {
+            reset("The sky resets. Read the hunt again.");
+          }
+        }).catch(function (err) {
+          busy = false;
+          reset(window.Backend.friendlyError(err));
+        });
+      }
+    });
+
+    window.addEventListener("resize", fit);
+    fit();
+
+    Overthink.hints("hint-slot", [
+      "Only the seven brightest stars matter.",
+      "Find the chase: one star leads, one follows, one trails close behind."
+    ]);
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

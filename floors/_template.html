@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<!-- ============================================================
+     OVERTHINK — floor template.
+     Copy this file to floor-11.html, floor-12.html, ... and:
+       1. Set the <title> and the initFloor options below
+          (floor number, title).
+       2. Write your puzzle HTML inside <main id="floor-main">.
+       3. IMPORTANT: never put answers, marks, durations, or
+          sequences in client code. Add the secrets to
+          supabase/seed.sql (git-ignored) and fetch any public
+          display data via Overthink.clues(floor).
+       4. Wire your puzzle JS at the bottom:
+            passcode floor -> Overthink.mountPasscode(floor, {...})
+            boss gate      -> Overthink.mountBoss(floor, {...})
+            hold floor     -> Overthink.submitHold(floor, ms)
+            sequence floor -> Overthink.submitSequence(floor, ids)
+            then Overthink.onSolved(res.mark, "flavor text")
+       5. Add your two hints to the Overthink.hints(...) call.
+       6. Bump BUILT_FLOORS in js/engine.js AND the BUILT constant
+          in index.html so the grid and Next button pick it up.
+     ============================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Floor N · Overthink</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="floor-main" class="floor-main">
+
+  <section class="puzzle-card">
+    <!-- TODO: your puzzle flavor text and interactive elements go here.
+         Remember: clues live in the page, answers live in Supabase. -->
+    <p>Describe the situation. Hide the truth in plain sight.</p>
+  </section>
+
+  <div id="hint-slot"></div>
+  <div id="passcode-slot"></div>
+  <!-- For interactive floors with NO passcode, delete the passcode-slot
+       div and resolve the floor via submitHold / submitSequence +
+       Overthink.onSolved(...). -->
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  async function boot() {
+    // initFloor returns false when the player is logged out (redirects
+    // to the landing) or the floor is still locked for them.
+    var ok = await Overthink.initFloor({
+      floor: 11,              // TODO: set me
+      title: "Floor Title"    // TODO: set me
+    });
+    if (!ok) return;
+
+    // TODO: optional public display data for this floor:
+    // var clues = await Overthink.clues(11).catch(function () { return {}; });
+
+    // TODO: your puzzle wiring goes here.
+
+    Overthink.hints("hint-slot", [
+      "First nudge — point at the mechanic, not the answer.",  // TODO
+      "Second nudge — nearly spell it out."                    // TODO
+    ]);
+
+    // TODO: pick ONE of these per floor:
+    Overthink.mountPasscode(11, {
+      successFlavor: "Flavor text for the victory screen.",    // TODO
+      wrongMessage: "Not quite. Try again."
+    });
+    // Overthink.mountBoss(11, { successFlavor: "...", wrongMessage: "..." });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
