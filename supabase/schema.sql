@@ -1,5 +1,5 @@
 -- ============================================================
--- OVERTHINK — Supabase schema
+-- THINKAKAIN — Supabase schema
 -- SAFE TO COMMIT: this file contains NO answers, marks, or secrets.
 -- All secrets live in seed.sql, which must NEVER be committed.
 --
