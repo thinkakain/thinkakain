@@ -13,16 +13,12 @@
 <main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <p>This level was painted black, and the painter hid one word in the dark.</p>
-    <p class="muted">Not everything is as dark as it seems. Bring up the light.</p>
     <canvas id="dark"></canvas>
     <div class="slider-row">
-      <label for="brightness">Brightness</label>
-      <input type="range" id="brightness" min="0" max="100" value="0" step="1">
+      <input type="range" id="brightness" min="0" max="100" value="0" step="1" aria-label="Brightness">
     </div>
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -76,14 +72,8 @@
     window.addEventListener("resize", fit);
     fit();
 
-    Thinkakain.hints("hint-slot", [
-      "The word is there at every brightness — just too faint to see.",
-      "Drag the slider all the way up."
-    ]);
-
     Thinkakain.mountPasscode(3, {
-      successFlavor: "You found it in the dark.",
-      wrongMessage: "Read the word the light reveals — letter by letter."
+      successFlavor: "You found it in the dark."
     });
   }
   boot();

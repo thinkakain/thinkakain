@@ -12,14 +12,12 @@
 
 <main id="level-main" class="level-main">
 
-  <section class="gate-panel">
-    <div class="gate-title">The Gatekeeper</div>
-    <p>Halt.</p>
-    <p>Each level you cleared left a <b>mark</b> on you — a single letter, earned, not given. The tower revealed each one on its victory screen, and your marks are listed on the tower landing.</p>
-    <p>Speak the four marks, <b>in the order of the levels that gave them</b>, and the gate will know you.</p>
+  <section class="puzzle-card">
+    <!-- Five lights. Tapping one toggles it and its neighbours.
+         Turn them all off. No words needed. -->
+    <div class="tiles-row" id="tiles"></div>
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -31,21 +29,60 @@
 (function () {
   "use strict";
 
-  // BOSS GATE: the answer is never in the client. The server compares
-  // the player's letters against the marks it recorded for levels 1-4 —
-  // un-Googlable by construction, and impossible without playing.
+  // 1-D Lights Out on 5 cells: tap toggles self + neighbours.
+  // All-on is solvable (tap 0&3, or 1&4 — verified). When every light
+  // is off, the tiles reveal the passcode. Nothing server-side until
+  // the player types it in.
+  var CODE = ["Q", "U", "I", "E", "T"];
+
   async function boot() {
-    var ok = await Thinkakain.initLevel({ level: 5, title: "The Gatekeeper" });
+    var ok = await Thinkakain.initLevel({ level: 5, title: "Quiet Lights" });
     if (!ok) return;
 
-    Thinkakain.hints("hint-slot", [
-      "Your marks were revealed on each level's victory screen.",
-      "Levels 1, 2, 3, 4 — in that order. Check the tower landing if you forgot."
-    ]);
+    var row = document.getElementById("tiles");
+    var state = [1, 1, 1, 1, 1];
+    var solved = false;
+    var tiles = [];
 
-    Thinkakain.mountBoss(5, {
-      successFlavor: "The gate swings open. Well remembered.",
-      wrongMessage: "The gate does not recognize those marks."
+    function render() {
+      for (var i = 0; i < 5; i++) {
+        tiles[i].classList.toggle("lit", state[i] === 1);
+        tiles[i].textContent = (solved ? CODE[i] : "");
+        tiles[i].classList.toggle("reveal", solved);
+        tiles[i].disabled = solved;
+      }
+    }
+
+    function check() {
+      for (var i = 0; i < 5; i++) {
+        if (state[i] !== 0) return;
+      }
+      solved = true;
+      render();
+    }
+
+    for (var i = 0; i < 5; i++) {
+      (function (idx) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "tile";
+        b.setAttribute("aria-label", "Light " + (idx + 1));
+        b.addEventListener("click", function () {
+          if (solved) return;
+          for (var j = idx - 1; j <= idx + 1; j++) {
+            if (j >= 0 && j < 5) state[j] = 1 - state[j];
+          }
+          render();
+          check();
+        });
+        row.appendChild(b);
+        tiles.push(b);
+      })(i);
+    }
+    render();
+
+    Thinkakain.mountPasscode(5, {
+      successFlavor: "Darkness, decoded."
     });
   }
   boot();

@@ -18,20 +18,10 @@
 
 <main id="level-main" class="level-main">
 
-  <section class="puzzle-card">
-    <p>Somewhere below, the tower buried a word.</p>
-    <p class="muted">Scroll. The meter knows how close you are.</p>
-  </section>
-
   <div class="deep" id="deep">
     <div class="depth-code" id="depth-code"></div>
   </div>
 
-  <section class="puzzle-card">
-    <p class="muted">Found it? Enter it below.</p>
-  </section>
-
-  <div id="hint-slot"></div>
   <div id="passcode-slot" class="sticky-bottom"></div>
 </main>
 
@@ -91,14 +81,8 @@
     measure();
     onScroll();
 
-    Thinkakain.hints("hint-slot", [
-      "Boiling means you're standing right on it.",
-      "About four-fifths of the way down."
-    ]);
-
     Thinkakain.mountPasscode(6, {
-      successFlavor: "The depths yield.",
-      wrongMessage: "Read the word the meter led you to — letter by letter."
+      successFlavor: "The depths yield."
     });
   }
   boot();

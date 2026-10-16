@@ -12,13 +12,12 @@
 
 <main id="level-main" class="level-main">
 
-  <section class="gate-panel">
-    <div class="gate-title">The Second Gate</div>
-    <p>The second gate knows only what the last four levels taught you.</p>
-    <p>Speak those marks, <b>in level order</b>, and climb.</p>
+  <section class="puzzle-card">
+    <!-- Five bars, five tones, scrambled. Tap them in ascending pitch
+         and they reveal the code. Sound on. No words needed. -->
+    <div class="bars-row" id="bars"></div>
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -30,20 +29,94 @@
 (function () {
   "use strict";
 
-  // BOSS GATE: the server compares the player's letters against the
-  // marks it recorded for levels 6-9. Nothing to view-source.
+  // Frequencies (A major pentatonic, pleasant together) in scrambled
+  // display order. The win condition — strictly ascending pitch — is
+  // discovered by ear. Letters spell the code left-to-right on win.
+  var FREQS = [329.63, 220.00, 493.88, 277.18, 392.00];
+  var CODE = ["S", "C", "A", "L", "E"];
+
+  var actx = null;
+  function tone(freq) {
+    try {
+      if (!actx) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        actx = new AC();
+      }
+      if (actx.state === "suspended") actx.resume();
+      var o = actx.createOscillator();
+      var g = actx.createGain();
+      o.type = "sine";
+      o.frequency.value = freq;
+      var t = actx.currentTime;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.5, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+      o.connect(g);
+      g.connect(actx.destination);
+      o.start(t);
+      o.stop(t + 0.75);
+    } catch (e) { /* audio unavailable: taps still register */ }
+  }
+
   async function boot() {
-    var ok = await Thinkakain.initLevel({ level: 10, title: "The Second Gate" });
+    var ok = await Thinkakain.initLevel({ level: 10, title: "Resonance" });
     if (!ok) return;
 
-    Thinkakain.hints("hint-slot", [
-      "Levels 6, 7, 8, 9 — in that order.",
-      "Your marks are on the tower landing if you forgot them."
-    ]);
+    var row = document.getElementById("bars");
+    var attempt = []; // freqs tapped so far, must stay ascending
+    var solved = false;
+    var bars = [];
 
-    Thinkakain.mountBoss(10, {
-      successFlavor: "Both gates stand open. The tower grows taller from here — levels 11 to 30 are coming soon.",
-      wrongMessage: "The gate does not recognize those marks."
+    function dimAll() {
+      for (var i = 0; i < bars.length; i++) {
+        bars[i].classList.remove("playing", "good");
+      }
+    }
+
+    function reset() {
+      attempt = [];
+      dimAll();
+      row.classList.remove("shake");
+      void row.offsetWidth;
+      row.classList.add("shake");
+    }
+
+    function win() {
+      solved = true;
+      for (var i = 0; i < bars.length; i++) {
+        bars[i].textContent = CODE[i];
+        bars[i].classList.add("reveal");
+        bars[i].classList.remove("playing", "good");
+        bars[i].disabled = true;
+      }
+    }
+
+    for (var i = 0; i < FREQS.length; i++) {
+      (function (idx) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "tone-bar";
+        b.setAttribute("aria-label", "Tone " + (idx + 1));
+        b.addEventListener("click", function () {
+          if (solved) return;
+          var f = FREQS[idx];
+          tone(f);
+          if (attempt.length && f <= attempt[attempt.length - 1]) {
+            reset(); // broke the ascent — start over
+            return;
+          }
+          attempt.push(f);
+          b.classList.add("playing", "good");
+          setTimeout(function () { b.classList.remove("playing"); }, 350);
+          if (attempt.length === FREQS.length) win();
+        });
+        row.appendChild(b);
+        bars.push(b);
+      })(i);
+    }
+
+    Thinkakain.mountPasscode(10, {
+      successFlavor: "Perfect pitch."
     });
   }
   boot();

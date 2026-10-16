@@ -19,16 +19,13 @@
       I weigh nothing, yet I grow &mdash;<br>
       speak my name, then let it go.
     </p>
-    <p class="center muted">Answer the riddle &mdash; then <b>press and hold</b> the button for exactly as many seconds as the answer has letters. The tower judges your timing. Release too early or too late and the level resets its patience.</p>
     <div class="hold-wrap">
       <button type="button" id="hold-btn">HOLD</button>
       <div class="hold-timer" id="hold-timer">0.0s</div>
       <div class="hold-msg" id="hold-msg"></div>
     </div>
-    <p class="center muted" style="font-size:0.8rem">Tip: on PC you can also hold the Space key while the button is focused.</p>
   </section>
 
-  <div id="hint-slot"></div>
   <!-- No passcode: this level is cleared by the timed hold, judged server-side. -->
 </main>
 
@@ -110,11 +107,6 @@
     btn.addEventListener("keyup", function (e) {
       if (e.key === " " || e.key === "Enter") { e.preventDefault(); end(); }
     });
-
-    Thinkakain.hints("hint-slot", [
-      "The answer is something the sun makes.",
-      "Count the letters in your answer — that is your number of seconds."
-    ]);
   }
   boot();
 })();

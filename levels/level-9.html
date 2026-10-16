@@ -13,13 +13,11 @@
 <main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <p>The hunter chases the <b>bull</b> across the sky, and his <b>dog</b> follows at his heel.</p>
-    <p class="muted">Click the stars of the hunt in the order of the story: the bull, the hunter, the dog. A wrong star — or the wrong order — and the sky resets.</p>
+    <p class="center muted">bull &rarr; hunter &rarr; dog</p>
     <div id="sky-wrap"><canvas id="sky"></canvas></div>
     <div class="sky-note" id="sky-note"></div>
   </section>
 
-  <div id="hint-slot"></div>
   <!-- No passcode: the click sequence is validated server-side. -->
 </main>
 
@@ -174,11 +172,6 @@
 
     window.addEventListener("resize", fit);
     fit();
-
-    Thinkakain.hints("hint-slot", [
-      "Only the seven brightest stars matter.",
-      "Find the chase: one star leads, one follows, one trails close behind."
-    ]);
   }
   boot();
 })();

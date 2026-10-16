@@ -13,11 +13,9 @@
 <main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <p>This level looks different depending on how you look at it.</p>
-    <p class="muted">Combine what both views show you.</p>
     <div class="view-toggle">
-      <button type="button" class="btn active" id="btn-desktop">Desktop view</button>
-      <button type="button" class="btn btn-ghost" id="btn-mobile">Mobile view</button>
+      <button type="button" class="btn active" id="btn-desktop">Wide</button>
+      <button type="button" class="btn btn-ghost" id="btn-mobile">Narrow</button>
     </div>
     <!-- The container width (not the real viewport) switches, so the
          puzzle works identically on phones and PCs. The fragments are
@@ -28,7 +26,6 @@
     </div>
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -63,14 +60,8 @@
     bDesk.addEventListener("click", function () { setView("desktop"); });
     bMob.addEventListener("click", function () { setView("mobile"); });
 
-    Thinkakain.hints("hint-slot", [
-      "Switch views and read each half.",
-      "Wide shows the first half, narrow shows the second."
-    ]);
-
     Thinkakain.mountPasscode(4, {
-      successFlavor: "Seeing double pays off.",
-      wrongMessage: "Put the two halves together, in view order."
+      successFlavor: "Seeing double pays off."
     });
   }
   boot();

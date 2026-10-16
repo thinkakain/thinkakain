@@ -17,7 +17,6 @@
          is encoded in zero-width characters (U+200B = 0, U+200C = 1,
          5 bits per A-Z letter). The page source contains no answers. -->
     <p class="story" id="story"></p>
-    <p class="muted" style="margin-top:14px">Copy the story above. There is more <b>between the letters</b> than in them.</p>
 
     <div class="decoder-box">
       <textarea id="decoder-input" placeholder="Paste the story here, then decode…"></textarea>
@@ -29,7 +28,6 @@
     </div>
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -92,14 +90,8 @@
       res.textContent = "Hidden message: " + zwDecodeBits(bits);
     });
 
-    Thinkakain.hints("hint-slot", [
-      "Copy the story. There is more between the letters than in them.",
-      "Paste it into the decoder below — or use the button that does it for you."
-    ]);
-
     Thinkakain.mountPasscode(7, {
-      successFlavor: "You heard the whisper.",
-      wrongMessage: "Decode the hidden message first — then enter exactly what it says."
+      successFlavor: "You heard the whisper."
     });
   }
   boot();

@@ -13,10 +13,6 @@
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <div class="look-up-big">Look up.</div>
-  <p class="center muted">That is all this level will tell you.</p>
-
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
 </main>
 
@@ -52,14 +48,8 @@
     cycle();
     setInterval(cycle, 1200);
 
-    Thinkakain.hints("hint-slot", [
-      "The answer is above this page.",
-      "Browser tabs have titles too — watch it cycle."
-    ]);
-
     Thinkakain.mountPasscode(1, {
-      successFlavor: "Keen eyes.",
-      wrongMessage: "Not quite. The page is trying to tell you where to look."
+      successFlavor: "Keen eyes."
     });
   }
   boot();
