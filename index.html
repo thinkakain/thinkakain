@@ -55,7 +55,6 @@
       <button type="button" class="signout-link" id="signout">Sign out</button>
     </div>
 
-    <div class="marks-strip" id="marks-strip"></div>
     <div class="level-grid" id="grid"></div>
     <div class="continue-wrap" id="continue-wrap"></div>
     <p class="footer-note">Levels 1&ndash;10 are open. The tower grows taller soon.</p>
@@ -69,7 +68,7 @@
 (function () {
   "use strict";
 
-  var BUILT = 10;
+  var BUILT = 0; // levels built so far — bump as each new level ships
   var LOCK_SVG = '<svg class="lock-icon" viewBox="0 0 24 24">' +
     '<rect x="5" y="11" width="14" height="9" rx="2"/>' +
     '<path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
@@ -130,23 +129,6 @@
   function renderGame(p) {
     document.getElementById("player-name").textContent = p.username || "player";
 
-    // marks strip: earned marks for levels 1..10, blanks for the rest
-    var strip = document.getElementById("marks-strip");
-    strip.innerHTML = "";
-    strip.appendChild(document.createTextNode("Marks: "));
-    var serverMarks = p.marks || {};
-    var localMarks = {};
-    try { localMarks = JSON.parse(localStorage.getItem("thinkakain_marks") || "{}"); }
-    catch (e) {}
-    for (var f = 1; f <= BUILT; f++) {
-      var chip = document.createElement("span");
-      var mk = serverMarks[f] || localMarks[f];
-      chip.className = "mark-chip" + (mk ? "" : " empty");
-      chip.textContent = mk || "·";
-      chip.title = "Level " + f;
-      strip.appendChild(chip);
-    }
-
     var grid = document.getElementById("grid");
     grid.innerHTML = "";
     for (var n = 1; n <= 30; n++) {
@@ -155,7 +137,7 @@
       if (p.cleared.indexOf(n) !== -1) {
         cell.className = "cell done";
         sub = '<span class="cell-sub">cleared</span>';
-      } else if (n === p.highest_floor && n <= BUILT) {
+      } else if (n === p.highest_level && n <= BUILT) {
         cell.className = "cell current";
         sub = '<span class="cell-sub">open</span>';
         (function (level) {
@@ -175,13 +157,13 @@
 
     var wrap = document.getElementById("continue-wrap");
     wrap.innerHTML = "";
-    if (p.highest_floor <= BUILT) {
+    if (p.highest_level <= BUILT) {
       var a = document.createElement("a");
       a.className = "btn";
-      a.href = "levels/level-" + p.highest_floor + ".html";
+      a.href = "levels/level-" + p.highest_level + ".html";
       a.textContent = p.cleared.length === 0
         ? "Enter Level 1"
-        : "Continue — Level " + p.highest_floor;
+        : "Continue — Level " + p.highest_level;
       wrap.appendChild(a);
     } else {
       var done = document.createElement("p");

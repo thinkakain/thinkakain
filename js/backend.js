@@ -4,7 +4,7 @@
    All answer validation happens server-side in Postgres
    SECURITY DEFINER functions (see supabase/schema.sql).
    This file NEVER sees answers — it only passes guesses through
-   and receives {correct, mark} verdicts.
+   and receives {correct} verdicts.
 
    Auth uses username + password. Because Supabase Auth needs an
    email, the app derives one: <username>@thinkakain.app.
@@ -97,57 +97,45 @@
 
     onAuthChange: function (cb) { return db().auth.onAuthStateChange(cb); },
 
-    // Server is the source of truth: highest unlocked level, cleared
-    // levels, and earned marks. All reads are RLS-scoped to the player.
+    // Server is the source of truth: highest unlocked level and cleared
+    // levels. All reads are RLS-scoped to the player.
     fetchProgress: async function () {
       var u = (await db().auth.getUser()).data.user;
       if (!u) return null;
       var pr = await db().from("progress")
-        .select("highest_floor,username").eq("user_id", u.id).maybeSingle();
+        .select("highest_level,username").eq("user_id", u.id).maybeSingle();
       if (pr.error) throw pr.error;
-      var cl = await db().from("floor_clears").select("floor").eq("user_id", u.id);
+      var cl = await db().from("level_clears").select("level").eq("user_id", u.id);
       if (cl.error) throw cl.error;
-      var mk = await db().from("floor_marks").select("floor,mark").eq("user_id", u.id);
-      if (mk.error) throw mk.error;
-      var cleared = (cl.data || []).map(function (r) { return r.floor; });
-      var marks = {};
-      (mk.data || []).forEach(function (r) { marks[r.floor] = r.mark; });
+      var cleared = (cl.data || []).map(function (r) { return r.level; });
       return {
-        highest_floor: (pr.data && pr.data.highest_floor) || 1,
+        highest_level: (pr.data && pr.data.highest_level) || 1,
         username: (pr.data && pr.data.username) || "",
-        cleared: cleared,
-        marks: marks
+        cleared: cleared
       };
     },
 
-    // Public per-level display data (ticker words, canvas word, story…).
-    // Contains no answers.
+    // Public per-level display data. Contains no answers.
     getClues: async function (level) {
-      var r = await db().rpc("get_floor_clues", { p_floor: level });
+      var r = await db().rpc("get_level_clues", { p_level: level });
       if (r.error) throw r.error;
       return r.data || {};
     },
 
-    // Each returns {correct: bool, mark: "X"|null}. Mark only when correct.
+    // Each returns {correct: bool}.
     validateGuess: async function (level, guess) {
-      var r = await db().rpc("validate_guess", { p_floor: level, p_guess: guess });
+      var r = await db().rpc("validate_guess", { p_level: level, p_guess: guess });
       if (r.error) throw r.error;
       return r.data;
     },
     validateHold: async function (level, holdMs) {
       var r = await db().rpc("validate_hold",
-        { p_floor: level, p_hold_ms: Math.round(holdMs) });
+        { p_level: level, p_hold_ms: Math.round(holdMs) });
       if (r.error) throw r.error;
       return r.data;
     },
     validateSequence: async function (level, seq) {
-      var r = await db().rpc("validate_sequence", { p_floor: level, p_seq: seq });
-      if (r.error) throw r.error;
-      return r.data;
-    },
-    // Boss gates: {correct: bool}. No mark — gates award none.
-    validateBoss: async function (level, letters) {
-      var r = await db().rpc("validate_boss", { p_floor: level, p_letters: letters });
+      var r = await db().rpc("validate_sequence", { p_level: level, p_seq: seq });
       if (r.error) throw r.error;
       return r.data;
     }

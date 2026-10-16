@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <!-- ============================================================
      THINKAKAIN — level template.
-     Copy this file to level-11.html, level-12.html, ... and:
+     Copy this file to level-1.html, level-2.html, ... and:
        1. Set the <title> and the initLevel options below
           (level number, title).
-       2. Write your puzzle HTML inside <main id="level-main">.
-       3. IMPORTANT: never put answers, marks, durations, or
-          sequences in client code. Add the secrets to
-          supabase/seed.sql (git-ignored) and fetch any public
-          display data via Thinkakain.clues(level).
+       2. Build your puzzle inside <main id="level-main">.
+       3. IMPORTANT: never put answers, durations, or sequences
+          in client code. Add the secrets to supabase/seed.sql
+          (git-ignored) and fetch any public display data via
+          Thinkakain.clues(level).
        4. Wire your puzzle JS at the bottom:
             passcode level -> Thinkakain.mountPasscode(level, {...})
-            boss gate      -> Thinkakain.mountBoss(level, {...})
             hold level     -> Thinkakain.submitHold(level, ms)
             sequence level -> Thinkakain.submitSequence(level, ids)
-            then Thinkakain.onSolved(res.mark, "flavor text")
-       5. Add your two hints to the Thinkakain.hints(...) call.
-       6. Bump BUILT_LEVELS in js/engine.js AND the BUILT constant
+            then Thinkakain.onSolved("flavor text")
+       5. Bump BUILT_LEVELS in js/engine.js AND the BUILT constant
           in index.html so the grid and Next button pick it up.
+     Design rule: no explanatory text, no hint buttons. The clue
+     lives in the page itself — the player figures out the rest.
      ============================================================ -->
 <html lang="en">
 <head>
@@ -33,12 +33,9 @@
 <main id="level-main" class="level-main">
 
   <section class="puzzle-card">
-    <!-- TODO: your puzzle flavor text and interactive elements go here.
-         Remember: clues live in the page, answers live in Supabase. -->
-    <p>Describe the situation. Hide the truth in plain sight.</p>
+    <!-- TODO: your puzzle goes here. Clues in the page, answers in Supabase. -->
   </section>
 
-  <div id="hint-slot"></div>
   <div id="passcode-slot"></div>
   <!-- For interactive levels with NO passcode, delete the passcode-slot
        div and resolve the level via submitHold / submitSequence +
@@ -58,27 +55,21 @@
     // initLevel returns false when the player is logged out (redirects
     // to the landing) or the level is still locked for them.
     var ok = await Thinkakain.initLevel({
-      level: 11,              // TODO: set me
+      level: 1,               // TODO: set me
       title: "Level Title"    // TODO: set me
     });
     if (!ok) return;
 
     // TODO: optional public display data for this level:
-    // var clues = await Thinkakain.clues(11).catch(function () { return {}; });
+    // var clues = await Thinkakain.clues(1).catch(function () { return {}; });
 
     // TODO: your puzzle wiring goes here.
 
-    Thinkakain.hints("hint-slot", [
-      "First nudge — point at the mechanic, not the answer.",  // TODO
-      "Second nudge — nearly spell it out."                    // TODO
-    ]);
-
     // TODO: pick ONE of these per level:
-    Thinkakain.mountPasscode(11, {
+    Thinkakain.mountPasscode(1, {
       successFlavor: "Flavor text for the victory screen.",    // TODO
       wrongMessage: "Not quite. Try again."
     });
-    // Thinkakain.mountBoss(11, { successFlavor: "...", wrongMessage: "..." });
   }
   boot();
 })();
