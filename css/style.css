@@ -847,3 +847,10 @@ body.black-bg { background: #000; }
   font-size: 1.9rem; font-weight: 700; color: #e8eefc; letter-spacing: .06em;
   padding: 1.5rem 0; line-height: 1.7;
 }
+
+/* Level 9 — melody notes */
+.melody {
+  text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 1.7rem; font-weight: 700; color: #e8eefc; letter-spacing: .35em;
+  padding: 1.5rem 0; line-height: 2;
+}
