@@ -865,7 +865,10 @@ body.black-bg { background: #000; }
   display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
   max-width: 420px; margin: 0 auto; padding: 1rem 0;
 }
-.color-grid .swatch { aspect-ratio: 1; border-radius: 8px; position: relative; }
+.color-grid .swatch {
+  position: relative; border-radius: 8px;
+  width: 100%; padding-bottom: 100%; /* square without aspect-ratio (old iOS) */
+}
 .color-grid .swatch.marked::after {
   content: ""; position: absolute; inset: 0; margin: auto;
   width: 24%; height: 24%; border-radius: 50%;
