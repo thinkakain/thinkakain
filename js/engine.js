@@ -43,7 +43,7 @@
   // Marks are cached locally ONLY as a convenience display
   // ("your marks: K E _ _"). They are never trusted for validation —
   // boss gates re-check against the server's floor_marks records.
-  var MARKS_KEY = "overthink_marks";
+  var MARKS_KEY = "thinkakain_marks";
   function cacheMark(level, mark) {
     if (!mark) return;
     try {

@@ -15,7 +15,7 @@ answer live server-side, so view-source reveals nothing.
 - Every 5th level is a **boss gate** validated against the marks the *server*
   recorded for the player's previous four levels — un-Googlable by construction.
 - Players register with **username + password** (Supabase Auth derives an
-  internal `<username>@overthink.local` email; players never see it). Progress
+  internal `<username>@thinkakain.app` email; players never see it). Progress
   (`highest_floor`, cleared levels, marks) is server-side and resumes on any
   device. Marks are also mirrored to localStorage purely as a convenience
   display — never trusted for validation.
@@ -48,7 +48,7 @@ answer live server-side, so view-source reveals nothing.
 
 5. **Auth settings.** In the dashboard go to Authentication → Providers →
    Email and make sure **"Confirm email" is OFF** (the derived
-   `@overthink.local` addresses can't receive mail). Everything else can stay
+   `@thinkakain.app` addresses can't receive mail). Everything else can stay
    default.
 
 6. **Deploy to GitHub Pages.** Push this folder's contents to a repo

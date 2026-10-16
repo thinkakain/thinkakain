@@ -113,15 +113,23 @@
 
   authForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    authError.textContent = "";
-    authSubmit.disabled = true;
-    var fn = mode === "register" ? window.Backend.signUp : window.Backend.signIn;
-    fn(authUser.value, authPass.value).then(function () {
-      location.reload(); // session persisted — boot straight into the game
-    }).catch(function (err) {
+    try {
+      authError.textContent = "";
+      authSubmit.disabled = true;
+      var backend = window.Backend;
+      if (!backend) throw new Error("game backend failed to load");
+      var fn = mode === "register" ? backend.signUp : backend.signIn;
+      fn(authUser.value, authPass.value).then(function () {
+        location.reload(); // session persisted — boot straight into the game
+      }).catch(function (err) {
+        authSubmit.disabled = false;
+        authError.textContent = backend.friendlyError(err);
+      });
+    } catch (err) {
       authSubmit.disabled = false;
-      authError.textContent = window.Backend.friendlyError(err);
-    });
+      authError.textContent = (window.Backend && window.Backend.friendlyError(err)) ||
+        "Something went wrong. Please reload the page and try again.";
+    }
   });
 
   /* ---------------- game ---------------- */
@@ -135,7 +143,7 @@
     strip.appendChild(document.createTextNode("Marks: "));
     var serverMarks = p.marks || {};
     var localMarks = {};
-    try { localMarks = JSON.parse(localStorage.getItem("overthink_marks") || "{}"); }
+    try { localMarks = JSON.parse(localStorage.getItem("thinkakain_marks") || "{}"); }
     catch (e) {}
     for (var f = 1; f <= BUILT; f++) {
       var chip = document.createElement("span");

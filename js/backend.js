@@ -7,7 +7,7 @@
    and receives {correct, mark} verdicts.
 
    Auth uses username + password. Because Supabase Auth needs an
-   email, the app derives one: <username>@overthink.local.
+   email, the app derives one: <username>@thinkakain.app.
    Players never see or type the email.
    ============================================================ */
 (function () {
@@ -39,7 +39,7 @@
   }
 
   function validUsername(u) { return /^[A-Za-z0-9_]{3,16}$/.test(u); }
-  function emailFor(u) { return u.toLowerCase() + "@overthink.local"; }
+  function emailFor(u) { return u.toLowerCase() + "@thinkakain.app"; }
 
   function friendlyError(err) {
     var m = String((err && err.message) || err || "");
@@ -72,7 +72,7 @@
       var r = await db().auth.signUp({ email: emailFor(username), password: password });
       if (r.error) throw new Error(friendlyError(r.error));
       // NOTE: keep "Confirm email" OFF in Supabase Auth settings —
-      // @overthink.local addresses can't receive mail.
+      // @thinkakain.app addresses can't receive mail.
       await ensureProfile(username);
       return r.data;
     },
