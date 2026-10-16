@@ -882,7 +882,7 @@ body.black-bg { background: #000; }
 }
 .flag .stripe {
   flex: 1; position: relative;
-  padding-bottom: 150%; /* 2:3 flag ratio, no aspect-ratio for old iOS */
+  padding-bottom: 75%; /* halved height */
   border-right: 2px solid #3a4a6b;
 }
 .flag .stripe span {
