@@ -935,3 +935,6 @@ body.black-bg { background: #000; }
   font-family: ui-monospace, Menlo, Consolas, monospace;
   margin-top: 0.25rem; letter-spacing: 0.1em;
 }
+
+/* Level 13 — atom image above numbers */
+.atom-img { max-width: 220px; margin: 0 auto 0.5rem; }
