@@ -48,6 +48,8 @@
 
       var jug = document.createElement("div");
       jug.className = "jug";
+      jug.style.height = (cap * 20) + "px"; // height proportional to capacity —
+      // same width everywhere, so equal volumes sit at equal absolute heights
       jug.setAttribute("role", "button");
       jug.setAttribute("aria-label", "jug " + (i + 1));
 
