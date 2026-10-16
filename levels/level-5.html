@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 5 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card">
+    <div id="jugs" class="jugs"></div>
+    <button id="jug-reset" class="icon-btn" aria-label="reset">&#8635;</button>
+    <div id="jug-msg" class="eq-msg"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var CAPS = [14, 9, 5];
+  var GOAL = 7;
+
+  var state = [14, 0, 0];
+  var moves = [];
+  var selected = null;
+  var busy = false;
+  var done = false;
+
+  var jugsEl = document.getElementById("jugs");
+  var msgEl = document.getElementById("jug-msg");
+  var jugEls = [];
+
+  function build() {
+    jugsEl.innerHTML = "";
+    jugEls = [];
+    CAPS.forEach(function (cap, i) {
+      var wrap = document.createElement("div");
+      wrap.className = "jug-wrap";
+
+      var jug = document.createElement("div");
+      jug.className = "jug";
+      jug.setAttribute("role", "button");
+      jug.setAttribute("aria-label", "jug " + (i + 1));
+
+      var water = document.createElement("div");
+      water.className = "water";
+      jug.appendChild(water);
+
+      if (cap >= GOAL) {
+        var line = document.createElement("div");
+        line.className = "target-line";
+        line.style.bottom = (GOAL / cap * 100) + "%";
+        var lab = document.createElement("span");
+        lab.textContent = GOAL;
+        line.appendChild(lab);
+        jug.appendChild(line);
+      }
+
+      var amt = document.createElement("div");
+      amt.className = "jug-amount";
+      jug.appendChild(amt);
+
+      jug.addEventListener("click", function () { onTap(i); });
+
+      var capEl = document.createElement("div");
+      capEl.className = "jug-cap";
+      capEl.textContent = cap;
+
+      wrap.appendChild(jug);
+      wrap.appendChild(capEl);
+      jugsEl.appendChild(wrap);
+      jugEls.push({ jug: jug, water: water, amt: amt });
+    });
+    render();
+  }
+
+  function render() {
+    CAPS.forEach(function (cap, i) {
+      var el = jugEls[i];
+      el.water.style.height = (state[i] / cap * 100) + "%";
+      el.amt.textContent = state[i];
+      el.jug.classList.toggle("selected", selected === i);
+    });
+  }
+
+  function onTap(i) {
+    if (busy || done) return;
+    msgEl.textContent = "";
+    if (selected === null) {
+      if (state[i] === 0) return;
+      selected = i;
+    } else if (selected === i) {
+      selected = null;
+    } else {
+      pour(selected, i);
+      selected = null;
+    }
+    render();
+  }
+
+  function pour(from, to) {
+    if (from === to || state[from] === 0 || state[to] === CAPS[to]) return;
+    var amt = Math.min(state[from], CAPS[to] - state[to]);
+    if (amt <= 0) return;
+    state[from] -= amt;
+    state[to] += amt;
+    moves.push([from, to]);
+    render();
+    if (isGoal()) submit();
+  }
+
+  function isGoal() {
+    var s = state.slice().sort(function (a, b) { return b - a; });
+    return s[0] === GOAL && s[1] === GOAL;
+  }
+
+  function submit() {
+    busy = true;
+    done = true;
+    Thinkakain.submitPours(5, moves).then(function (res) {
+      busy = false;
+      if (res && res.correct) {
+        Thinkakain.onSolved("Seven and seven.");
+      } else {
+        done = false;
+        msgEl.textContent = "Not quite. Try again.";
+      }
+    }).catch(function (err) {
+      busy = false;
+      done = false;
+      msgEl.textContent = window.Backend.friendlyError(err);
+    });
+  }
+
+  function reset() {
+    if (busy) return;
+    state = [14, 0, 0];
+    moves = [];
+    selected = null;
+    done = false;
+    msgEl.textContent = "";
+    render();
+  }
+
+  document.getElementById("jug-reset").addEventListener("click", reset);
+
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 5 });
+    if (!ok) return;
+    build();
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

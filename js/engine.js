@@ -11,6 +11,7 @@
      await Thinkakain.submitHold(level, elapsedMs)  -> {correct}
      await Thinkakain.submitSequence(level, ids)    -> {correct}
      await Thinkakain.submitEquation(level, expr)  -> {correct}
+     await Thinkakain.submitPours(level, moves)     -> {correct}
      Thinkakain.onSolved(flavorHtml)                -> success overlay
      await Thinkakain.clues(level)                  -> public clue payload
    ============================================================ */
@@ -18,7 +19,7 @@
   "use strict";
 
   var TOTAL_LEVELS = 30;
-  var BUILT_LEVELS = 4; // bump as levels are built, one at a time
+  var BUILT_LEVELS = 5; // bump as levels are built, one at a time
 
   var cfg = null;
   var progressCache = null;
@@ -238,6 +239,9 @@
   function submitEquation(level, expr) {
     return window.Backend.validateEquation(level, expr);
   }
+  function submitPours(level, moves) {
+    return window.Backend.validatePours(level, moves);
+  }
   function onSolved(flavorHtml) {
     showSuccess(flavorHtml);
   }
@@ -253,6 +257,7 @@
     submitHold: submitHold,
     submitSequence: submitSequence,
     submitEquation: submitEquation,
+    submitPours: submitPours,
     onSolved: onSolved,
     clues: clues,
     getProgress: getProgress,

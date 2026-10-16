@@ -145,6 +145,13 @@
       var r = await db().rpc("validate_equation", { p_level: level, p_expr: expr });
       if (r.error) throw r.error;
       return r.data;
+    },
+    // Pouring levels: submits the move list [[from,to],...]; the server
+    // replays the physics and checks the goal. Returns {correct: bool}.
+    validatePours: async function (level, moves) {
+      var r = await db().rpc("validate_pours", { p_level: level, p_moves: moves });
+      if (r.error) throw r.error;
+      return r.data;
     }
   };
 })();

@@ -329,3 +329,76 @@ begin
   return jsonb_build_object('correct', ok);
 end;
 $$;
+
+-- Pouring levels (water jugs). The client submits the move list as
+-- [[from_idx, to_idx], ...]; the server replays the physics from the
+-- start state in clues and passes when the top amounts match the goal.
+-- clues: {"caps": [...], "start": [...], "goal": [...]}
+create or replace function validate_pours(p_level int, p_moves jsonb)
+returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  s     level_secrets%rowtype;
+  caps  int[];
+  state int[];
+  goal  int[];
+  m     jsonb;
+  f     int;
+  t     int;
+  amt   int;
+  srt   int[];
+  ok    boolean := false;
+begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
+  select * into s from level_secrets where level = p_level;
+  if s.clues is null or jsonb_typeof(p_moves) <> 'array' then
+    return jsonb_build_object('correct', false);
+  end if;
+  if jsonb_array_length(p_moves) < 1 or jsonb_array_length(p_moves) > 500 then
+    return jsonb_build_object('correct', false);
+  end if;
+  select coalesce(array_agg(v order by o), array[]::int[]) into caps
+    from (select (x::int) as v, o
+          from jsonb_array_elements_text(s.clues->'caps') with ordinality as t(x, o)) sub;
+  select coalesce(array_agg(v order by o), array[]::int[]) into state
+    from (select (x::int) as v, o
+          from jsonb_array_elements_text(s.clues->'start') with ordinality as t(x, o)) sub;
+  select coalesce(array_agg(v order by o), array[]::int[]) into goal
+    from (select (x::int) as v, o
+          from jsonb_array_elements_text(s.clues->'goal') with ordinality as t(x, o)) sub;
+  if array_length(caps, 1) is null or array_length(state, 1) is null
+     or array_length(goal, 1) is null
+     or array_length(caps, 1) <> array_length(state, 1) then
+    return jsonb_build_object('correct', false);
+  end if;
+
+  for m in select * from jsonb_array_elements(p_moves) loop
+    f := (m->>0)::int;
+    t := (m->>1)::int;
+    if f is null or t is null
+       or f < 0 or t < 0
+       or f >= array_length(caps, 1) or t >= array_length(caps, 1)
+       or f = t then
+      return jsonb_build_object('correct', false);
+    end if;
+    if state[f+1] <= 0 or state[t+1] >= caps[t+1] then
+      return jsonb_build_object('correct', false);
+    end if;
+    amt := least(state[f+1], caps[t+1] - state[t+1]);
+    state[f+1] := state[f+1] - amt;
+    state[t+1] := state[t+1] + amt;
+  end loop;
+
+  select array_agg(v order by v desc) into srt from unnest(state) as v;
+  if srt[1:array_length(goal, 1)] = goal then
+    ok := true;
+    perform _record_clear(p_level);
+  end if;
+  return jsonb_build_object('correct', ok);
+end;
+$$;
