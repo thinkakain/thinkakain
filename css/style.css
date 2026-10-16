@@ -745,3 +745,7 @@ input[type="range"]::-moz-range-thumb {
   padding: 3rem 1rem;
   user-select: none;
 }
+
+/* Level 2 — photo clue */
+.photo-card { padding: 0; overflow: hidden; }
+.level-photo { width: 100%; display: block; user-select: none; }
