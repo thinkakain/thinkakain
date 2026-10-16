@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 3 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card">
+    <canvas id="dots" class="dots-canvas" aria-label="scattered dots"></canvas>
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  // Dot positions in percent coordinates. The puzzle is the dots
+  // themselves; the answer (their count) is verified server-side.
+  var DOTS = [
+    [12,18],[28,12],[44,20],[60,12],[76,20],
+    [16,46],[33,40],[37,44],[52,48],[68,42],[84,50],
+    [30,74],[55,70],[76,78]
+  ];
+
+  function draw() {
+    var c = document.getElementById("dots");
+    var w = c.clientWidth, h = Math.round(w * 0.72);
+    var dpr = window.devicePixelRatio || 1;
+    c.width = w * dpr; c.height = h * dpr;
+    c.style.height = h + "px";
+    var x = c.getContext("2d");
+    x.scale(dpr, dpr);
+    x.clearRect(0, 0, w, h);
+    DOTS.forEach(function (p, i) {
+      var r = w * 0.022 * (0.85 + (i % 3) * 0.15);
+      x.beginPath();
+      x.arc(p[0] / 100 * w, p[1] / 100 * h, r, 0, Math.PI * 2);
+      x.fillStyle = "#cfe3ff";
+      x.shadowColor = "#7fb2ff";
+      x.shadowBlur = r * 1.6;
+      x.fill();
+      x.shadowBlur = 0;
+    });
+  }
+
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 3 });
+    if (!ok) return;
+    draw();
+    window.addEventListener("resize", draw);
+    Thinkakain.mountPasscode(3, {
+      successFlavor: "Counted true.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

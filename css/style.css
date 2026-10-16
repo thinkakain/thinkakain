@@ -749,3 +749,6 @@ input[type="range"]::-moz-range-thumb {
 /* Level 2 — photo clue */
 .photo-card { padding: 0; overflow: hidden; }
 .level-photo { width: 100%; display: block; user-select: none; }
+
+/* Level 3 — count the dots */
+.dots-canvas { width: 100%; display: block; }
