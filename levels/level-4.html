@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 4 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-4.jpg"
+         alt="A keyboard with blank keys, six of them numbered">
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 4 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(4, {
+      successFlavor: "You read the keys.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
