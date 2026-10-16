@@ -11,29 +11,9 @@
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <section class="puzzle-card">
-    <div class="dice-row">
-      <div class="die">
-        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
-        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
-        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
-      </div>
-      <div class="die">
-        <div class="pip blank"></div><div class="pip blank"></div><div class="pip blank"></div>
-        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
-        <div class="pip blank"></div><div class="pip blank"></div><div class="pip blank"></div>
-      </div>
-      <div class="die">
-        <div class="pip"></div><div class="pip blank"></div><div class="pip blank"></div>
-        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
-        <div class="pip blank"></div><div class="pip blank"></div><div class="pip"></div>
-      </div>
-      <div class="die">
-        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
-        <div class="pip blank"></div><div class="pip"></div><div class="pip blank"></div>
-        <div class="pip"></div><div class="pip blank"></div><div class="pip"></div>
-      </div>
-    </div>
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-14.png"
+         alt="A word search">
   </section>
   <div id="passcode-slot"></div>
 </main>
@@ -49,7 +29,7 @@
     var ok = await Thinkakain.initLevel({ level: 14 });
     if (!ok) return;
     Thinkakain.mountPasscode(14, {
-      successFlavor: "Roll with it.",
+      successFlavor: "Bull market.",
       wrongMessage: "Not quite. Try again."
     });
   }
