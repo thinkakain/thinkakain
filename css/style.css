@@ -938,3 +938,6 @@ body.black-bg { background: #000; }
 
 /* Level 13 — atom image above numbers */
 .atom-img { max-width: 220px; margin: 0 auto 0.5rem; }
+
+/* Level 15 — audio player */
+.audio-player { width: 100%; max-width: 320px; margin: 0 auto; display: block; }

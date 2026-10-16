@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Z = A · Thinkakain</title>
-<link rel="stylesheet" href="../css/style.css?v=13">
+<title>Level 15 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css?v=14">
 </head>
 <body>
 
@@ -12,8 +12,7 @@
 
 <main id="level-main" class="level-main">
   <section class="puzzle-card">
-    <div class="code-text">HVXIVG</div>
-    <div class="tiny-hint">z = a</div>
+    <audio controls src="../assets/audio.mp3" class="audio-player"></audio>
   </section>
   <div id="passcode-slot"></div>
 </main>
@@ -29,7 +28,8 @@
     var ok = await Thinkakain.initLevel({ level: 15 });
     if (!ok) return;
     Thinkakain.mountPasscode(15, {
-      successFlavor: "Shh.",
+      normalize: function (s) { return s.replace(/\s+/g, ""); },
+      successFlavor: "Now you hear it.",
       wrongMessage: "Not quite. Try again."
     });
   }
