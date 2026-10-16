@@ -848,9 +848,14 @@ body.black-bg { background: #000; }
   padding: 1.5rem 0; line-height: 1.7;
 }
 
-/* Level 9 — melody notes */
-.melody {
-  text-align: center; font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: 1.7rem; font-weight: 700; color: #e8eefc; letter-spacing: .35em;
-  padding: 1.5rem 0; line-height: 2;
+/* Level 9 — note grid */
+.note-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+  max-width: 420px; margin: 0 auto; padding: 1rem 0;
+}
+.note-grid .cell {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  border: 2px solid #3a4a6b; border-radius: 8px;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 1.35rem; font-weight: 700; color: #e8eefc;
 }
