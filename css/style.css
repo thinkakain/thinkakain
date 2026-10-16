@@ -928,3 +928,10 @@ body.black-bg { background: #000; }
 /* Level 11 — text inside left arrow */
 .arrow-wrap { max-width: 420px; margin: 0 auto; padding: 1rem 0; }
 .arrow-svg { width: 100%; height: auto; display: block; }
+
+/* Tiny on-page hint (visible on mobile, unlike tab titles) */
+.tiny-hint {
+  text-align: center; color: #5a6b8f; font-size: 0.85rem;
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  margin-top: 0.25rem; letter-spacing: 0.1em;
+}
