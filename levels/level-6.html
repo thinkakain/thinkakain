@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 6 · Overthink</title>
+<title>Level 6 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -48,10 +48,10 @@
   // is the player's normalized distance to that target; "BOILING"
   // (within ~1.2% of total scroll) fades the word in.
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 6, title: "Hot and Cold" });
+    var ok = await Thinkakain.initLevel({ level: 6, title: "Hot and Cold" });
     if (!ok) return;
 
-    var clues = await Overthink.clues(6).catch(function () { return {}; });
+    var clues = await Thinkakain.clues(6).catch(function () { return {}; });
     document.getElementById("depth-code").textContent = clues.buried_word || "";
 
     var meterWord = document.getElementById("meter-word");
@@ -91,12 +91,12 @@
     measure();
     onScroll();
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Boiling means you're standing right on it.",
       "About four-fifths of the way down."
     ]);
 
-    Overthink.mountPasscode(6, {
+    Thinkakain.mountPasscode(6, {
       successFlavor: "The depths yield.",
       wrongMessage: "Read the word the meter led you to — letter by letter."
     });

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 3 · Overthink</title>
+<title>Level 3 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -38,10 +38,10 @@
   // slider raises the text alpha so the word emerges from the black.
   // The word itself arrives from the server (page source has no answers).
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 3, title: "Out of the Dark" });
+    var ok = await Thinkakain.initLevel({ level: 3, title: "Out of the Dark" });
     if (!ok) return;
 
-    var clues = await Overthink.clues(3).catch(function () { return {}; });
+    var clues = await Thinkakain.clues(3).catch(function () { return {}; });
     var hiddenWord = clues.hidden_word || "";
 
     var cv = document.getElementById("dark");
@@ -76,12 +76,12 @@
     window.addEventListener("resize", fit);
     fit();
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "The word is there at every brightness — just too faint to see.",
       "Drag the slider all the way up."
     ]);
 
-    Overthink.mountPasscode(3, {
+    Thinkakain.mountPasscode(3, {
       successFlavor: "You found it in the dark.",
       wrongMessage: "Read the word the light reveals — letter by letter."
     });

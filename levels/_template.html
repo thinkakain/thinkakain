@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- ============================================================
-     OVERTHINK — level template.
+     THINKAKAIN — level template.
      Copy this file to level-11.html, level-12.html, ... and:
        1. Set the <title> and the initLevel options below
           (level number, title).
@@ -8,14 +8,14 @@
        3. IMPORTANT: never put answers, marks, durations, or
           sequences in client code. Add the secrets to
           supabase/seed.sql (git-ignored) and fetch any public
-          display data via Overthink.clues(level).
+          display data via Thinkakain.clues(level).
        4. Wire your puzzle JS at the bottom:
-            passcode level -> Overthink.mountPasscode(level, {...})
-            boss gate      -> Overthink.mountBoss(level, {...})
-            hold level     -> Overthink.submitHold(level, ms)
-            sequence level -> Overthink.submitSequence(level, ids)
-            then Overthink.onSolved(res.mark, "flavor text")
-       5. Add your two hints to the Overthink.hints(...) call.
+            passcode level -> Thinkakain.mountPasscode(level, {...})
+            boss gate      -> Thinkakain.mountBoss(level, {...})
+            hold level     -> Thinkakain.submitHold(level, ms)
+            sequence level -> Thinkakain.submitSequence(level, ids)
+            then Thinkakain.onSolved(res.mark, "flavor text")
+       5. Add your two hints to the Thinkakain.hints(...) call.
        6. Bump BUILT_LEVELS in js/engine.js AND the BUILT constant
           in index.html so the grid and Next button pick it up.
      ============================================================ -->
@@ -23,7 +23,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level N · Overthink</title>
+<title>Level N · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -42,7 +42,7 @@
   <div id="passcode-slot"></div>
   <!-- For interactive levels with NO passcode, delete the passcode-slot
        div and resolve the level via submitHold / submitSequence +
-       Overthink.onSolved(...). -->
+       Thinkakain.onSolved(...). -->
 
 </main>
 
@@ -57,28 +57,28 @@
   async function boot() {
     // initLevel returns false when the player is logged out (redirects
     // to the landing) or the level is still locked for them.
-    var ok = await Overthink.initLevel({
+    var ok = await Thinkakain.initLevel({
       level: 11,              // TODO: set me
       title: "Level Title"    // TODO: set me
     });
     if (!ok) return;
 
     // TODO: optional public display data for this level:
-    // var clues = await Overthink.clues(11).catch(function () { return {}; });
+    // var clues = await Thinkakain.clues(11).catch(function () { return {}; });
 
     // TODO: your puzzle wiring goes here.
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "First nudge — point at the mechanic, not the answer.",  // TODO
       "Second nudge — nearly spell it out."                    // TODO
     ]);
 
     // TODO: pick ONE of these per level:
-    Overthink.mountPasscode(11, {
+    Thinkakain.mountPasscode(11, {
       successFlavor: "Flavor text for the victory screen.",    // TODO
       wrongMessage: "Not quite. Try again."
     });
-    // Overthink.mountBoss(11, { successFlavor: "...", wrongMessage: "..." });
+    // Thinkakain.mountBoss(11, { successFlavor: "...", wrongMessage: "..." });
   }
   boot();
 })();

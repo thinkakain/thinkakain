@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 9 · Overthink</title>
+<title>Level 9 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -36,7 +36,7 @@
   // star is the bull, the hunter, the dog is for the player to deduce
   // from the arrangement; the server holds the true sequence.
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 9, title: "The Hunter" });
+    var ok = await Thinkakain.initLevel({ level: 9, title: "The Hunter" });
     if (!ok) return;
 
     var canvas = document.getElementById("sky");
@@ -158,10 +158,10 @@
       draw();
       if (clicked.length === 3) {
         busy = true;
-        Overthink.submitSequence(9, clicked).then(function (res) {
+        Thinkakain.submitSequence(9, clicked).then(function (res) {
           busy = false;
           if (res && res.correct) {
-            Overthink.onSolved(res.mark, "The hunt is complete.");
+            Thinkakain.onSolved(res.mark, "The hunt is complete.");
           } else {
             reset("The sky resets. Read the hunt again.");
           }
@@ -175,7 +175,7 @@
     window.addEventListener("resize", fit);
     fit();
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Only the seven brightest stars matter.",
       "Find the chase: one star leads, one follows, one trails close behind."
     ]);

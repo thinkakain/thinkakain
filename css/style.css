@@ -1,5 +1,5 @@
 /* ============================================================
-   OVERTHINK — shared dark "tower" aesthetic
+   THINKAKAIN — shared dark "tower" aesthetic
    Mobile-first, vanilla CSS. No emojis; icons are CSS/SVG only.
    ============================================================ */
 :root {
@@ -262,7 +262,6 @@ body {
   background-clip: text;
   color: transparent;
 }
-.tagline { color: var(--muted); margin: 6px 0 0; }
 
 .howto { margin: 26px auto 8px; }
 .howto h2 {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 7 · Overthink</title>
+<title>Level 7 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -68,11 +68,11 @@
   }
 
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 7, title: "Between the Letters" });
+    var ok = await Thinkakain.initLevel({ level: 7, title: "Between the Letters" });
     if (!ok) return;
 
     var storyEl = document.getElementById("story");
-    var clues = await Overthink.clues(7).catch(function () { return {}; });
+    var clues = await Thinkakain.clues(7).catch(function () { return {}; });
     // textContent (not innerHTML): the payload carries invisible
     // characters, never markup.
     storyEl.textContent = clues.story_html || "";
@@ -92,12 +92,12 @@
       res.textContent = "Hidden message: " + zwDecodeBits(bits);
     });
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Copy the story. There is more between the letters than in them.",
       "Paste it into the decoder below — or use the button that does it for you."
     ]);
 
-    Overthink.mountPasscode(7, {
+    Thinkakain.mountPasscode(7, {
       successFlavor: "You heard the whisper.",
       wrongMessage: "Decode the hidden message first — then enter exactly what it says."
     });

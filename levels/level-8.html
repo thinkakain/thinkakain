@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 8 · Overthink</title>
+<title>Level 8 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -44,7 +44,7 @@
   // server. The client measures milliseconds and submits them; the
   // server compares against its own secret. Nothing to view-source here.
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 8, title: "Hold On" });
+    var ok = await Thinkakain.initLevel({ level: 8, title: "Hold On" });
     if (!ok) return;
 
     var btn = document.getElementById("hold-btn");
@@ -73,10 +73,10 @@
       startT = 0;
       timerEl.textContent = (ms / 1000).toFixed(1) + "s";
       busy = true;
-      Overthink.submitHold(8, ms).then(function (res) {
+      Thinkakain.submitHold(8, ms).then(function (res) {
         busy = false;
         if (res && res.correct) {
-          Overthink.onSolved(res.mark, "You held your ground.");
+          Thinkakain.onSolved(res.mark, "You held your ground.");
         } else {
           msg.textContent = "Not quite. The riddle names the seconds.";
           btn.classList.remove("shake");
@@ -111,7 +111,7 @@
       if (e.key === " " || e.key === "Enter") { e.preventDefault(); end(); }
     });
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "The answer is something the sun makes.",
       "Count the letters in your answer — that is your number of seconds."
     ]);

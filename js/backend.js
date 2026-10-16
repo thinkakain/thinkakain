@@ -1,5 +1,5 @@
 /* ============================================================
-   OVERTHINK — Supabase data layer (real backend, no stubs)
+   THINKAKAIN — Supabase data layer (real backend, no stubs)
    ------------------------------------------------------------
    All answer validation happens server-side in Postgres
    SECURITY DEFINER functions (see supabase/schema.sql).
@@ -15,7 +15,7 @@
 
   var client = null;
 
-  function config() { return window.OverthinkConfig || {}; }
+  function config() { return window.ThinkakainConfig || {}; }
 
   function isConfigured() {
     var c = config();

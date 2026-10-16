@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 4 · Overthink</title>
+<title>Level 4 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -41,10 +41,10 @@
   "use strict";
 
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 4, title: "Two Sizes" });
+    var ok = await Thinkakain.initLevel({ level: 4, title: "Two Sizes" });
     if (!ok) return;
 
-    var clues = await Overthink.clues(4).catch(function () { return {}; });
+    var clues = await Thinkakain.clues(4).catch(function () { return {}; });
     document.getElementById("frag-wide").textContent = clues.frag_wide || "";
     document.getElementById("frag-narrow").textContent = clues.frag_narrow || "";
 
@@ -63,12 +63,12 @@
     bDesk.addEventListener("click", function () { setView("desktop"); });
     bMob.addEventListener("click", function () { setView("mobile"); });
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Switch views and read each half.",
       "Wide shows the first half, narrow shows the second."
     ]);
 
-    Overthink.mountPasscode(4, {
+    Thinkakain.mountPasscode(4, {
       successFlavor: "Seeing double pays off.",
       wrongMessage: "Put the two halves together, in view order."
     });

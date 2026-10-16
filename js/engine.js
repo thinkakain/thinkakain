@@ -1,20 +1,20 @@
 /* ============================================================
-   OVERTHINK — UI engine (vanilla JS)
+   THINKAKAIN — UI engine (vanilla JS)
    ------------------------------------------------------------
    This file renders headers, hints, passcode forms, and success
    overlays. It contains ZERO answers, marks, or solutions — every
    verdict comes from the server via js/backend.js.
 
    Level pages use (all async where noted):
-     await Overthink.initLevel({level, title, ...}) -> bool playable
-     Overthink.hints(slotId, [hint1, hint2])
-     Overthink.mountPasscode(level, {wrongMessage, successFlavor})
-     Overthink.mountBoss(level, {wrongMessage, successFlavor})
-     await Overthink.submitHold(level, elapsedMs)  -> {correct, mark}
-     await Overthink.submitSequence(level, ids)    -> {correct, mark}
-     Overthink.onSolved(mark, flavorHtml)          -> success overlay
-     await Overthink.clues(level)                  -> public clue payload
-     Overthink.cachedMarks()                       -> {level: mark} (display only)
+     await Thinkakain.initLevel({level, title, ...}) -> bool playable
+     Thinkakain.hints(slotId, [hint1, hint2])
+     Thinkakain.mountPasscode(level, {wrongMessage, successFlavor})
+     Thinkakain.mountBoss(level, {wrongMessage, successFlavor})
+     await Thinkakain.submitHold(level, elapsedMs)  -> {correct, mark}
+     await Thinkakain.submitSequence(level, ids)    -> {correct, mark}
+     Thinkakain.onSolved(mark, flavorHtml)          -> success overlay
+     await Thinkakain.clues(level)                  -> public clue payload
+     Thinkakain.cachedMarks()                       -> {level: mark} (display only)
    ============================================================ */
 (function () {
   "use strict";
@@ -319,7 +319,7 @@
     return window.Backend.getClues(level);
   }
 
-  window.Overthink = {
+  window.Thinkakain = {
     initLevel: initLevel,
     hints: hints,
     mountPasscode: mountPasscode,

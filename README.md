@@ -1,4 +1,4 @@
-# OVERTHINK — a 30-level puzzle tower
+# THINKAKAIN — a 30-level puzzle tower
 
 A static, no-build-step puzzle game (vanilla HTML/CSS/JS) hosted on **GitHub Pages**,
 with **Supabase** as the server-authoritative backend: auth, progress, and every
@@ -39,7 +39,7 @@ answer live server-side, so view-source reveals nothing.
 
 4. **Wire up the client.** Copy your values into [`js/config.js`](js/config.js):
    ```js
-   window.OverthinkConfig = {
+   window.ThinkakainConfig = {
      SUPABASE_URL: "https://xyzcompany.supabase.co",
      SUPABASE_ANON_KEY: "eyJhbGciOi..."
    };
@@ -64,10 +64,10 @@ answer live server-side, so view-source reveals nothing.
 1. Copy [`levels/_template.html`](levels/_template.html) → `levels/level-11.html`.
 2. Set the level number/title in `initLevel`, write the puzzle, add two hints,
    and pick the resolver:
-   - passcode → `Overthink.mountPasscode(11, {...})`
-   - boss gate → `Overthink.mountBoss(11, {...})`
-   - timed hold → `Overthink.submitHold(11, ms)` then `Overthink.onSolved(res.mark, …)`
-   - click sequence → `Overthink.submitSequence(11, ids)` then `Overthink.onSolved(res.mark, …)`
+   - passcode → `Thinkakain.mountPasscode(11, {...})`
+   - boss gate → `Thinkakain.mountBoss(11, {...})`
+   - timed hold → `Thinkakain.submitHold(11, ms)` then `Thinkakain.onSolved(res.mark, …)`
+   - click sequence → `Thinkakain.submitSequence(11, ids)` then `Thinkakain.onSolved(res.mark, …)`
 3. **Add the secrets** to `floor_secrets` (SQL editor — never in the repo):
    ```sql
    insert into floor_secrets (level, answer, mark, clues) values
@@ -76,7 +76,7 @@ answer live server-side, so view-source reveals nothing.
    For hold levels set `hold_answer` (word; hold seconds = its letter count).
    For sequence levels set `sequence` (int array). For public display data
    (ticker words, canvas words, story HTML…) put it in `clues` as JSON —
-   fetch it client-side with `Overthink.clues(11)`.
+   fetch it client-side with `Thinkakain.clues(11)`.
 4. Bump `BUILT_LEVELS` in `js/engine.js` **and** the `BUILT` constant in
    `index.html` so the level grid, Continue button, and Next-level links
    include the new level.

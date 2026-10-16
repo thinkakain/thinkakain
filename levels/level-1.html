@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 1 · Overthink</title>
+<title>Level 1 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="has-ticker">
@@ -33,10 +33,10 @@
   // Both cycle the same word list, fetched from the server — the page
   // source contains no answers. One frame of the cycle is the passcode.
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 1, title: "Look Up" });
+    var ok = await Thinkakain.initLevel({ level: 1, title: "Look Up" });
     if (!ok) return;
 
-    var clues = await Overthink.clues(1).catch(function () { return {}; });
+    var clues = await Thinkakain.clues(1).catch(function () { return {}; });
     var words = (clues.ticker_words && clues.ticker_words.length)
       ? clues.ticker_words
       : ["look", "up"];
@@ -52,12 +52,12 @@
     cycle();
     setInterval(cycle, 1200);
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "The answer is above this page.",
       "Browser tabs have titles too — watch it cycle."
     ]);
 
-    Overthink.mountPasscode(1, {
+    Thinkakain.mountPasscode(1, {
       successFlavor: "Keen eyes.",
       wrongMessage: "Not quite. The page is trying to tell you where to look."
     });

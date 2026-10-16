@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 2 · Overthink</title>
+<title>Level 2 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -42,7 +42,7 @@
   // footer ("Level 2") can tell the truth. The real answer is checked
   // server-side; unlock logic uses the true level number (2).
   async function boot() {
-    var ok = await Overthink.initLevel({
+    var ok = await Thinkakain.initLevel({
       level: 2,
       title: "The Wrong Number",
       levelLabel: "Level 3",
@@ -50,12 +50,12 @@
     });
     if (!ok) return;
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Plaques can lie. Something else here tells the truth.",
       "The progress bar and the footer agree with each other. Trust them."
     ]);
 
-    Overthink.mountPasscode(2, {
+    Thinkakain.mountPasscode(2, {
       successFlavor: "Sharp eyes.",
       wrongMessage: "The plaque is lying to you. Look at what else the page says."
     });

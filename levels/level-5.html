@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 5 · Overthink</title>
+<title>Level 5 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -35,15 +35,15 @@
   // the player's letters against the marks it recorded for levels 1-4 —
   // un-Googlable by construction, and impossible without playing.
   async function boot() {
-    var ok = await Overthink.initLevel({ level: 5, title: "The Gatekeeper" });
+    var ok = await Thinkakain.initLevel({ level: 5, title: "The Gatekeeper" });
     if (!ok) return;
 
-    Overthink.hints("hint-slot", [
+    Thinkakain.hints("hint-slot", [
       "Your marks were revealed on each level's victory screen.",
       "Levels 1, 2, 3, 4 — in that order. Check the tower landing if you forgot."
     ]);
 
-    Overthink.mountBoss(5, {
+    Thinkakain.mountBoss(5, {
       successFlavor: "The gate swings open. Well remembered.",
       wrongMessage: "The gate does not recognize those marks."
     });
