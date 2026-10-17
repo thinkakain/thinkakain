@@ -5,79 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 20 · Thinkakain</title>
 <link rel="stylesheet" href="../css/style.css?v=16">
-<style>
-.news-page { background: #f4f1e8; color: #1a1a1a; border-radius: 8px; padding: 24px; max-width: 850px; margin: 0 auto; font-family: Georgia, serif; }
-.news-masthead { text-align: center; border-bottom: 3px double #1a1a1a; padding-bottom: 12px; margin-bottom: 16px; }
-.news-masthead h1 { font-size: 2.5rem; margin: 0; letter-spacing: 2px; }
-.news-date { font-size: 0.85rem; color: #555; margin-top: 4px; }
-.news-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
-.news-article { margin-bottom: 20px; }
-.news-article h2 { font-size: 1.3rem; margin: 0 0 8px; line-height: 1.3; }
-.news-article h3 { font-size: 1.1rem; margin: 0 0 6px; }
-.news-article p { font-size: 0.92rem; line-height: 1.6; margin: 0 0 10px; text-align: justify; }
-.news-ad { border: 2px dashed #999; border-radius: 8px; padding: 16px; text-align: center; background: #fff; margin-bottom: 20px; }
-.news-ad h3 { margin: 0 0 8px; font-size: 1.1rem; }
-.news-ad img { width: 140px; height: 140px; }
-.news-ad p { font-size: 0.8rem; color: #666; margin: 8px 0 0; }
-.news-footer { border-top: 1px solid #999; margin-top: 16px; padding-top: 12px; font-size: 0.8rem; color: #666; text-align: center; }
-@media (max-width: 600px) { .news-grid { grid-template-columns: 1fr; } }
-</style>
 </head>
 <body>
 
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <div class="news-page">
-    <div class="news-masthead">
-      <h1>The Daily Chronicle</h1>
-      <div class="news-date">Friday, October 17, 2026 · Late Edition</div>
-    </div>
-
-    <div class="news-grid">
-      <div>
-        <div class="news-article">
-          <h2>City Council Approves New Park Funding in 5-4 Vote</h2>
-          <p>In a session lasting nearly four hours, the city council voted narrowly to allocate $2.3 million for the renovation of Riverside Park. The plan includes new walking trails, updated playground equipment, and expanded parking facilities.</p>
-          <p>"This is a win for families," said Council Member Alvarez. Opponents argued the funds should go toward road repairs instead. Construction begins in early spring.</p>
-        </div>
-        <div class="news-article">
-          <h2>Hiker Rescued After Shouting "Help!" for Three Hours</h2>
-          <p>A 34-year-old hiker was rescued from the northern trails yesterday after becoming lost at dusk. "I just kept shouting 'Help!' until someone heard me," he told reporters. Search teams located him using his phone's GPS signal.</p>
-          <p>Officials remind hikers to carry emergency supplies and inform others of their planned routes.</p>
-        </div>
-        <div class="news-article">
-          <h3>Library Extends Weekend Hours</h3>
-          <p>The downtown library will now open Sundays from noon to 5 PM, starting next month. The change comes after a petition gathered over 2,000 signatures.</p>
-        </div>
-      </div>
-      <div>
-        <div class="news-ad">
-          <h3>Discover Music History</h3>
-          <img src="../assets/beatles-qr.png" alt="QR code">
-          <p>Scan to explore the legends</p>
-        </div>
-        <div class="news-article">
-          <h3>Album Review: Midnight Echoes</h3>
-          <p>The band's sophomore effort shows growth, with stronger songwriting throughout. Standout moments include the opener and the closer, but it's Track 13 that truly shines — a stripped-down acoustic number that recalls the classics.</p>
-          <p>Rating: 4 out of 5 stars.</p>
-        </div>
-        <div class="news-article">
-          <h3>High School Football Advances</h3>
-          <p>The Tigers defeated the Eagles 28-14 Friday night to advance to the regional finals. Quarterback James Liu threw for 312 yards and three touchdowns.</p>
-        </div>
-        <div class="news-article">
-          <h3>Weather</h3>
-          <p>Partly cloudy, high 72°F. Chance of rain 20%.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="news-footer">
-      The Daily Chronicle · 123 Main St · Printed on recycled paper
-    </div>
-  </div>
-  <div id="passcode-slot" style="margin-top: 20px;"></div>
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-20.jpg"
+         alt="Front page">
+  </section>
+  <div id="passcode-slot"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
