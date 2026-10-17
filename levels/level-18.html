@@ -11,8 +11,9 @@
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <section class="puzzle-card">
-    <div class="braille-text">&#10270;&#10261;&#10277;&#10249;&#10259;</div>
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-18.jpg"
+         alt="A glass tube">
   </section>
   <div id="passcode-slot"></div>
 </main>
@@ -28,7 +29,7 @@
     var ok = await Thinkakain.initLevel({ level: 18 });
     if (!ok) return;
     Thinkakain.mountPasscode(18, {
-      successFlavor: "Feel it.",
+      successFlavor: "Clip it.",
       wrongMessage: "Not quite. Try again."
     });
   }
