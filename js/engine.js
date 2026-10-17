@@ -247,6 +247,9 @@
   function submitMagnet(level, movesStr) {
     return window.Backend.validateMagnet(level, movesStr);
   }
+  function submitLife(level, clicks) {
+    return window.Backend.validateLife(level, clicks);
+  }
   function onSolved(flavorHtml) {
     showSuccess(flavorHtml);
   }
@@ -264,6 +267,7 @@
     submitEquation: submitEquation,
     submitPours: submitPours,
     submitMagnet: submitMagnet,
+    submitLife: submitLife,
     onSolved: onSolved,
     clues: clues,
     getProgress: getProgress,

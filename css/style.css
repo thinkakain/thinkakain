@@ -974,3 +974,38 @@ body.black-bg { background: #000; }
   border-radius: 10px; cursor: pointer;
 }
 .mag-btn:active { background: #2a3a5c; }
+
+/* ---------- life stages (level 19) ---------- */
+.life-card { max-width: 900px; }
+.life-quote {
+  text-align: center; font-style: italic; color: #9fb0d0;
+  margin: 0 0 18px; font-size: 1.05rem; line-height: 1.5;
+}
+.life-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.life-cell {
+  position: relative; border-radius: 12px; overflow: hidden;
+  min-height: 220px; background-size: cover; background-position: center;
+  border: 1px solid #2a3a5c;
+}
+.life-cell[data-bg="forest"] { background-image: url("../assets/stages/bg-forest.webp"); }
+.life-cell[data-bg="beach"] { background-image: url("../assets/stages/bg-beach.webp"); }
+.life-cell[data-bg="mountain"] { background-image: url("../assets/stages/bg-mountain.webp"); }
+.life-cell[data-bg="desert"] { background-image: url("../assets/stages/bg-desert.webp"); }
+.life-babies {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 8px; padding: 12px;
+}
+.life-baby {
+  width: 72px; height: 72px; object-fit: contain;
+  cursor: pointer; transition: transform 0.15s;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+.life-baby:hover { transform: scale(1.1); }
+.life-baby:active { transform: scale(0.95); }
+@media (max-width: 600px) {
+  .life-baby { width: 56px; height: 56px; }
+  .life-cell { min-height: 180px; }
+}

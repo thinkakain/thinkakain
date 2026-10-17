@@ -159,6 +159,13 @@
       var r = await db().rpc("validate_magnet", { p_level: level, p_moves: movesStr });
       if (r.error) throw r.error;
       return r.data;
+    },
+    // Life-stage levels: submits the click history (baby indices); the server
+    // replays the aging and checks for nine teens. Returns {correct: bool}.
+    validateLife: async function (level, clicks) {
+      var r = await db().rpc("validate_life", { p_level: level, p_clicks: clicks });
+      if (r.error) throw r.error;
+      return r.data;
     }
   };
 })();

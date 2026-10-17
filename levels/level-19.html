@@ -4,17 +4,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 19 · Thinkakain</title>
-<link rel="stylesheet" href="../css/style.css?v=15">
+<link rel="stylesheet" href="../css/style.css?v=16">
 </head>
 <body>
 
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <section class="puzzle-card">
-    <div class="calc-display">376006</div>
+  <section class="puzzle-card life-card">
+    <p class="life-quote">I don't care who you are, where you're from, what you did — just where you're at.</p>
+    <div class="life-grid">
+      <div class="life-cell" data-bg="forest">
+        <div class="life-babies" data-cell="0"></div>
+      </div>
+      <div class="life-cell" data-bg="beach">
+        <div class="life-babies" data-cell="1"></div>
+      </div>
+      <div class="life-cell" data-bg="mountain">
+        <div class="life-babies" data-cell="2"></div>
+      </div>
+      <div class="life-cell" data-bg="desert">
+        <div class="life-babies" data-cell="3"></div>
+      </div>
+    </div>
+    <div id="life-msg" class="eq-msg"></div>
   </section>
-  <div id="passcode-slot"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,13 +38,78 @@
 <script>
 (function () {
   "use strict";
+
+  // Boys at these indices, girls at the rest. Fixed so it's verifiable.
+  var BOYS = [0, 2, 5, 7, 9];
+  function imgFor(idx, stage) {
+    var isBoy = BOYS.indexOf(idx) !== -1;
+    if (stage === 0) return "../assets/stages/stage-baby.png";
+    if (stage === 1) return isBoy ? "../assets/stages/stage-boy.png" : "../assets/stages/stage-girl.png";
+    if (stage === 2) return isBoy ? "../assets/stages/stage-teen-boy.png" : "../assets/stages/stage-teen-girl.png";
+    if (stage === 3) return isBoy ? "../assets/stages/stage-man.png" : "../assets/stages/stage-woman.png";
+    return isBoy ? "../assets/stages/stage-grandpa.png" : "../assets/stages/stage-grandma.png";
+  }
+
+  // Cell assignment: forest 0,1,2 / beach 3,4,5 / mountain 6,7,8 / desert 9
+  var CELL_BABIES = [[0,1,2],[3,4,5],[6,7,8],[9]];
+
+  var stages = [0,0,0,0,0,0,0,0,0,0];
+  var clicks = [];
+  var done = false;
+  var msgEl = document.getElementById("life-msg");
+
+  function build() {
+    CELL_BABIES.forEach(function (babies, cellIdx) {
+      var container = document.querySelector('.life-babies[data-cell="' + cellIdx + '"]');
+      container.innerHTML = "";
+      babies.forEach(function (idx) {
+        var img = document.createElement("img");
+        img.className = "life-baby";
+        img.src = imgFor(idx, 0);
+        img.alt = "";
+        img.dataset.idx = idx;
+        img.addEventListener("click", function () { age(idx); });
+        container.appendChild(img);
+      });
+    });
+  }
+
+  function age(idx) {
+    if (done) return;
+    stages[idx] = (stages[idx] + 1) % 5;
+    clicks.push(idx);
+    var img = document.querySelector('.life-baby[data-idx="' + idx + '"]');
+    img.src = imgFor(idx, stages[idx]);
+    checkWin();
+  }
+
+  function teenCount() {
+    return stages.filter(function (s) { return s === 2; }).length;
+  }
+
+  function checkWin() {
+    if (teenCount() !== 9) return;
+    done = true;
+    msgEl.textContent = "Checking…";
+    Thinkakain.submitLife(19, clicks)
+      .then(function (res) {
+        if (res && res.correct) {
+          Thinkakain.onSolved("Nine teens.");
+        } else {
+          msgEl.textContent = "Not quite — keep going.";
+          done = false;
+        }
+      })
+      .catch(function () {
+        msgEl.textContent = "Connection hiccup — try again.";
+        done = false;
+      });
+  }
+
   async function boot() {
     var ok = await Thinkakain.initLevel({ level: 19 });
     if (!ok) return;
-    Thinkakain.mountPasscode(19, {
-      successFlavor: "Search it.",
-      wrongMessage: "Not quite. Try again."
-    });
+    build();
   }
   boot();
 })();
