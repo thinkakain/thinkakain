@@ -11,8 +11,9 @@
 <header id="tower-header"></header>
 
 <main id="level-main" class="level-main">
-  <section class="puzzle-card">
-    <div class="code-text">4663</div>
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-17.jpg"
+         alt="A tarot card">
   </section>
   <div id="passcode-slot"></div>
 </main>
@@ -28,7 +29,7 @@
     var ok = await Thinkakain.initLevel({ level: 17 });
     if (!ok) return;
     Thinkakain.mountPasscode(17, {
-      successFlavor: "No place like it.",
+      successFlavor: "Exactly.",
       wrongMessage: "Not quite. Try again."
     });
   }
