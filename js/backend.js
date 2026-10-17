@@ -152,6 +152,13 @@
       var r = await db().rpc("validate_pours", { p_level: level, p_moves: moves });
       if (r.error) throw r.error;
       return r.data;
+    },
+    // Magnet levels: submits the move string (UDLR); the server replays
+    // the slides and checks the goal. Returns {correct: bool}.
+    validateMagnet: async function (level, movesStr) {
+      var r = await db().rpc("validate_magnet", { p_level: level, p_moves: movesStr });
+      if (r.error) throw r.error;
+      return r.data;
     }
   };
 })();

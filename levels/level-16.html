@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 16 · Thinkakain</title>
-<link rel="stylesheet" href="../css/style.css?v=14">
+<link rel="stylesheet" href="../css/style.css?v=15">
 </head>
 <body>
 
@@ -12,9 +12,18 @@
 
 <main id="level-main" class="level-main">
   <section class="puzzle-card">
-    <div class="hangman-word">P _ Z Z L E</div>
+    <div id="mag-board" class="mag-board"></div>
+    <div class="mag-controls">
+      <button class="mag-btn" data-dir="U" aria-label="magnet up">&#8593;</button>
+      <div class="mag-row">
+        <button class="mag-btn" data-dir="L" aria-label="magnet left">&#8592;</button>
+        <button class="mag-btn" data-dir="R" aria-label="magnet right">&#8594;</button>
+      </div>
+      <button class="mag-btn" data-dir="D" aria-label="magnet down">&#8595;</button>
+    </div>
+    <button id="mag-reset" class="icon-btn" aria-label="reset">&#8635;</button>
+    <div id="mag-msg" class="eq-msg"></div>
   </section>
-  <div id="passcode-slot"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -24,13 +33,145 @@
 <script>
 (function () {
   "use strict";
+
+  var SIZE = 7;
+  var WALLS = [[0,1],[0,3],[1,4],[2,0],[2,4],[2,5],[4,6],[6,2],[6,5]];
+  var STARTS = [[6,4],[5,3],[1,0]];
+  var TARGETS = [[5,6],[0,6],[1,1]];
+  var COLORS = ["#e74c3c", "#3498db", "#2ecc71"];
+
+  var pos = STARTS.map(function (p) { return p.slice(); });
+  var moves = [];
+  var busy = false;
+  var done = false;
+
+  var boardEl = document.getElementById("mag-board");
+  var msgEl = document.getElementById("mag-msg");
+  var tokenEls = [];
+
+  function isWall(r, c) {
+    return WALLS.some(function (w) { return w[0] === r && w[1] === c; });
+  }
+
+  function build() {
+    boardEl.innerHTML = "";
+    // cells
+    for (var r = 0; r < SIZE; r++) {
+      for (var c = 0; c < SIZE; c++) {
+        var cell = document.createElement("div");
+        cell.className = "mag-cell" + (isWall(r, c) ? " wall" : "");
+        boardEl.appendChild(cell);
+      }
+    }
+    // targets
+    TARGETS.forEach(function (t, i) {
+      var el = document.createElement("div");
+      el.className = "mag-target";
+      el.style.borderColor = COLORS[i];
+      position(el, t[0], t[1]);
+      boardEl.appendChild(el);
+    });
+    // tokens
+    tokenEls = [];
+    for (var i = 0; i < 3; i++) {
+      var tok = document.createElement("div");
+      tok.className = "mag-token";
+      tok.style.background = COLORS[i];
+      position(tok, pos[i][0], pos[i][1]);
+      boardEl.appendChild(tok);
+      tokenEls.push(tok);
+    }
+  }
+
+  function position(el, r, c) {
+    el.style.left = "calc(" + (c * 100 / SIZE) + "% + 3px)";
+    el.style.top = "calc(" + (r * 100 / SIZE) + "% + 3px)";
+    el.style.width = "calc(" + (100 / SIZE) + "% - 6px)";
+    el.style.height = "calc(" + (100 / SIZE) + "% - 6px)";
+  }
+
+  function slide(dir) {
+    if (busy || done) return;
+    var dr = 0, dc = 0;
+    if (dir === "U") dr = -1;
+    else if (dir === "D") dr = 1;
+    else if (dir === "L") dc = -1;
+    else if (dir === "R") dc = 1;
+    else return;
+
+    var order = [0, 1, 2].sort(function (a, b) {
+      var ka = -(pos[a][0] * dr + pos[a][1] * dc);
+      var kb = -(pos[b][0] * dr + pos[b][1] * dc);
+      return ka - kb;
+    });
+
+    var occupied = {};
+    pos.forEach(function (p) { occupied[p[0] + "," + p[1]] = true; });
+
+    var moved = false;
+    order.forEach(function (i) {
+      var r = pos[i][0], c = pos[i][1];
+      delete occupied[r + "," + c];
+      while (true) {
+        var nr = r + dr, nc = c + dc;
+        if (nr < 0 || nr >= SIZE || nc < 0 || nc >= SIZE) break;
+        if (isWall(nr, nc)) break;
+        if (occupied[nr + "," + nc]) break;
+        r = nr; c = nc;
+        moved = true;
+      }
+      pos[i] = [r, c];
+      occupied[r + "," + c] = true;
+      position(tokenEls[i], r, c);
+    });
+
+    if (!moved) return;
+    moves.push(dir);
+    busy = true;
+    setTimeout(function () {
+      busy = false;
+      checkWin();
+    }, 320);
+  }
+
+  function checkWin() {
+    for (var i = 0; i < 3; i++) {
+      if (pos[i][0] !== TARGETS[i][0] || pos[i][1] !== TARGETS[i][1]) return;
+    }
+    done = true;
+    msgEl.textContent = "Checking…";
+    Thinkakain.submitMagnet(16, moves.join(""))
+      .then(function (res) {
+        if (res && res.correct) {
+          Thinkakain.onSolved("Magnets obey.");
+        } else {
+          msgEl.textContent = "Not quite — reset and try again.";
+          done = false;
+        }
+      })
+      .catch(function () {
+        msgEl.textContent = "Connection hiccup — try again.";
+        done = false;
+      });
+  }
+
+  function reset() {
+    pos = STARTS.map(function (p) { return p.slice(); });
+    moves = [];
+    done = false;
+    msgEl.textContent = "";
+    tokenEls.forEach(function (tok, i) { position(tok, pos[i][0], pos[i][1]); });
+  }
+
+  document.querySelectorAll(".mag-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () { slide(btn.getAttribute("data-dir")); });
+  });
+  document.getElementById("mag-reset").addEventListener("click", reset);
+
   async function boot() {
     var ok = await Thinkakain.initLevel({ level: 16 });
     if (!ok) return;
-    Thinkakain.mountPasscode(16, {
-      successFlavor: "Phew.",
-      wrongMessage: "Not quite. Try again."
-    });
+    build();
   }
   boot();
 })();

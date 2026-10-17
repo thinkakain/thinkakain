@@ -244,6 +244,9 @@
   function submitPours(level, moves) {
     return window.Backend.validatePours(level, moves);
   }
+  function submitMagnet(level, movesStr) {
+    return window.Backend.validateMagnet(level, movesStr);
+  }
   function onSolved(flavorHtml) {
     showSuccess(flavorHtml);
   }
@@ -260,6 +263,7 @@
     submitSequence: submitSequence,
     submitEquation: submitEquation,
     submitPours: submitPours,
+    submitMagnet: submitMagnet,
     onSolved: onSolved,
     clues: clues,
     getProgress: getProgress,
