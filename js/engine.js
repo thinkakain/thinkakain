@@ -52,7 +52,7 @@
     if (!header) return;
     header.innerHTML = "";
 
-    var back = make("a", "back-link", "&larr; Tower");
+    var back = make("a", "back-link", "&larr; Levels");
     back.href = "../index.html";
 
     var mid = make("div", "header-mid");
@@ -78,7 +78,7 @@
     if (!main) return;
     main.innerHTML = "";
     var card = make("div", "puzzle-card locked-card", html);
-    var a = make("a", "btn", "Back to the tower");
+    var a = make("a", "btn", "Back to levels");
     a.href = "../index.html";
     card.appendChild(a);
     main.appendChild(card);
@@ -88,7 +88,7 @@
     var header = document.getElementById("tower-header");
     if (!header) return;
     header.innerHTML = "";
-    var back = make("a", "back-link", "&larr; Tower");
+    var back = make("a", "back-link", "&larr; Levels");
     back.href = "../index.html?review=1";
     var mid = make("div", "header-mid");
     mid.appendChild(make("div", "level-label",
@@ -115,7 +115,7 @@
     var next = make("a", "btn next-btn", "");
     if (cfg.level >= BUILT_LEVELS) {
       next.href = "../index.html";
-      next.textContent = "Back to the tower";
+      next.textContent = "Back to levels";
     } else {
       next.href = "level-" + (cfg.level + 1) + ".html";
       next.textContent = "Next level \u2192"; // arrow, not emoji
@@ -140,7 +140,7 @@
     cfg = options;
     if (!window.Backend.isConfigured()) {
       renderNotice("<div class='locked-big'>Not configured</div>" +
-        "<p class='muted'>The tower's backend isn't set up yet. " +
+        "<p class='muted'>The game's backend isn't set up yet. " +
         "See README → One-time Supabase setup.</p>");
       return false;
     }

@@ -16,7 +16,7 @@
 
   <!-- Shown when js/config.js still has empty placeholders -->
   <div class="setup-warning" id="setup-warning" hidden>
-    <h2>Tower offline</h2>
+    <h2>Offline</h2>
     <p>The game backend isn't connected yet. Finish the one-time setup in
        <b>README → One-time Supabase setup</b>, then fill in
        <code>js/config.js</code>.</p>
@@ -57,7 +57,7 @@
 
     <div class="level-grid" id="grid"></div>
     <div class="continue-wrap" id="continue-wrap"></div>
-    <p class="footer-note">The tower grows taller soon.</p>
+    <p class="footer-note">More levels coming soon.</p>
   </div>
 </main>
 
@@ -177,7 +177,7 @@
     } else {
       var done = document.createElement("p");
       done.className = "muted";
-      done.textContent = "You cleared every open level. The tower grows taller soon.";
+      done.textContent = "You cleared every open level. More coming soon.";
       wrap.appendChild(done);
     }
   }
