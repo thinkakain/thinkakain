@@ -1009,3 +1009,7 @@ body.black-bg { background: #000; }
   .life-baby { width: 56px; height: 56px; }
   .life-cell { min-height: 180px; }
 }
+
+/* ---------- level 23 riddle ---------- */
+.text-card { text-align: center; }
+.riddle-text p { margin: 0.6em 0; font-size: 1.1em; }

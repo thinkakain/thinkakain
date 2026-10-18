@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 23 · Thinkakain</title>
-<link rel="stylesheet" href="../style.css?v=16">
+<link rel="stylesheet" href="../css/style.css?v=17">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card text-card">
+    <div class="riddle-text">
+      <p>You named your son PALEST.</p>
+      <p>PALEST named his son PASTEL.</p>
+      <p>PASTEL named his son PETALS.</p>
+      <p>PETALS named his son PLATES.</p>
+      <p>PLATES named his son PLEATS.</p>
+      <br>
+      <p>What is the name of PALEST's parent?</p>
+    </div>
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js?v=2"></script>
 <script src="../js/backend.js"></script>
 <script src="../js/engine.js"></script>
-</head>
-<body>
-<div id="tower-header"></div>
-<main id="tower-main" class="level-main">
-  <div class="riddle-text">
-    <p>You named your son PALEST.</p>
-    <p>PALEST named his son PASTEL.</p>
-    <p>PASTEL named his son PETALS.</p>
-    <p>PETALS named his son PLATES.</p>
-    <p>PLATES named his son PLEATS.</p>
-    <br>
-    <p>What is the name of PALEST's parent?</p>
-  </div>
-  <div id="passcode-mount"></div>
-</main>
 <script>
-(async function() {
-  var ok = await Thinkakain.initLevel({ level: 23 });
-  if (!ok) return;
-  Thinkakain.mountPasscode(23, {
-    successFlavor: "The name was yours all along."
-  });
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 23 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(23, {
+      successFlavor: "The name was yours all along.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
 })();
 </script>
 </body>
