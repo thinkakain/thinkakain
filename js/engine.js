@@ -19,7 +19,7 @@
   "use strict";
 
   var TOTAL_LEVELS = 30;
-  var BUILT_LEVELS = 23; // bump as levels are built, one at a time
+  var BUILT_LEVELS = 24; // bump as levels are built, one at a time
 
   var cfg = null;
   var progressCache = null;
@@ -250,6 +250,9 @@
   function submitLife(level, clicks) {
     return window.Backend.validateLife(level, clicks);
   }
+  function submitAbcd(level, a, b, c, d) {
+    return window.Backend.validateAbcd(level, a, b, c, d);
+  }
   function onSolved(flavorHtml) {
     showSuccess(flavorHtml);
   }
@@ -268,6 +271,7 @@
     submitPours: submitPours,
     submitMagnet: submitMagnet,
     submitLife: submitLife,
+    submitAbcd: submitAbcd,
     onSolved: onSolved,
     clues: clues,
     getProgress: getProgress,

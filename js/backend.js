@@ -166,6 +166,13 @@
       var r = await db().rpc("validate_life", { p_level: level, p_clicks: clicks });
       if (r.error) throw r.error;
       return r.data;
+    },
+    // ABCD digit levels: submits four digits; the server checks the
+    // column-sum puzzle constraints. Returns {correct: bool}.
+    validateAbcd: async function (level, a, b, c, d) {
+      var r = await db().rpc("validate_abcd", { p_level: level, p_a: a, p_b: b, p_c: c, p_d: d });
+      if (r.error) throw r.error;
+      return r.data;
     }
   };
 })();

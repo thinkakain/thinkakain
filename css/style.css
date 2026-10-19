@@ -1013,3 +1013,14 @@ body.black-bg { background: #000; }
 /* ---------- level 23 riddle ---------- */
 .text-card { text-align: center; }
 .riddle-text p { margin: 0.6em 0; font-size: 1.1em; }
+
+/* ---------- level 24 abcd puzzle ---------- */
+.abcd-card { text-align: center; }
+.abcd-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 1.4em; }
+.abcd-box { width: 52px; height: 52px; font-size: 1.3em; text-align: center; border: 2px solid var(--line); border-radius: 8px; background: var(--panel); color: inherit; }
+.abcd-fixed { display: inline-block; width: 52px; height: 52px; line-height: 52px; font-size: 1.3em; border: 2px solid var(--line); border-radius: 8px; background: var(--bg-dim); }
+.abcd-op, .abcd-eq { font-weight: bold; }
+.abcd-out { min-width: 60px; font-variant-numeric: tabular-nums; }
+.abcd-plus, .abcd-arrow { text-align: center; font-size: 1.3em; color: var(--muted); }
+.abcd-hint { margin: 12px 0; color: var(--muted); font-size: 0.9em; }
+.abcd-msg { margin-top: 10px; min-height: 1.4em; }
