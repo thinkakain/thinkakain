@@ -79,7 +79,7 @@
     if (A !== null && B !== null) {
       v = (10*A+B)*3;
       if (v > 999) setCells(["p1d1","p1d2","p1d3"], "✕✕✕");
-      else setCells(["p1d1","p1d2","p1d3"], String(v).padStart(3, "·"));
+      else setCells(["p1d1","p1d2","p1d3"], String(v).padStart(3, "0"));
     } else setCells(["p1d1","p1d2","p1d3"], "···");
     if (C !== null && D !== null) {
       w = (70+C)*D;
@@ -87,11 +87,11 @@
       else setCells(["p2d1","p2d2","p2d3"], String(w).padStart(3, "0"));
     } else setCells(["p2d1","p2d2","p2d3"], "···");
     document.getElementById("tD").textContent = D === null ? "·" : String(D);
-    if (v === null || w === null || v < 100 || v > 999 || w > 999) {
+    if (v === null || w === null || v > 999 || w > 999) {
       setCells(["cs1","cs2","cs3"], "···");
       return;
     }
-    var s1 = String(v), s2 = String(w).padStart(3, "0");
+    var s1 = String(v).padStart(3, "0"), s2 = String(w).padStart(3, "0");
     document.getElementById("cs1").textContent = +s1[0] + +s2[0];
     document.getElementById("cs2").textContent = +s1[1] + +s2[1];
     document.getElementById("cs3").textContent = +s1[2] + +s2[2];
