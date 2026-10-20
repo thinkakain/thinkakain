@@ -1016,11 +1016,42 @@ body.black-bg { background: #000; }
 
 /* ---------- level 24 abcd puzzle ---------- */
 .abcd-card { text-align: center; }
-.abcd-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 10px 0; font-size: 1.4em; }
-.abcd-box { width: 52px; height: 52px; font-size: 1.3em; text-align: center; border: 2px solid var(--line); border-radius: 8px; background: var(--panel); color: inherit; }
-.abcd-fixed { display: inline-block; width: 52px; height: 52px; line-height: 52px; font-size: 1.3em; border: 2px solid var(--line); border-radius: 8px; background: var(--bg-dim); }
-.abcd-op, .abcd-eq { font-weight: bold; }
-.abcd-out { min-width: 60px; font-variant-numeric: tabular-nums; }
-.abcd-plus, .abcd-arrow { text-align: center; font-size: 1.3em; color: var(--muted); }
-.abcd-hint { margin: 12px 0; color: var(--muted); font-size: 0.9em; }
+.abcd-grid {
+  display: grid;
+  grid-template-columns: 2.4rem 2.4rem 3.4rem 0.9rem 1.8rem 1.8rem 1.8rem 0.9rem 1.8rem 1.8rem;
+  gap: 0.3rem 0.3rem;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.abcd-box {
+  width: 2.4rem; height: 2.8rem; font-size: 1.25rem; text-align: center;
+  border: 2px solid var(--line); border-radius: 8px;
+  background: var(--panel); color: inherit; padding: 0;
+}
+.abcd-box-d { width: 2.3rem; }
+.abcd-fixed {
+  width: 2.4rem; height: 2.8rem; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--line); border-radius: 8px; background: var(--panel2);
+}
+.abcd-digit {
+  height: 2.8rem; font-size: 1.25rem;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--line); border-radius: 8px; background: var(--panel);
+  font-variant-numeric: tabular-nums;
+}
+.abcd-digit-sm { width: 1.55rem; height: 2.4rem; font-size: 1.1rem; }
+.abcd-opcell { font-weight: bold; font-size: 1.15rem; text-align: center; }
+.abcd-opflex { display: flex; align-items: center; justify-content: center; gap: 0.25rem; }
+.abcd-eq { font-weight: bold; font-size: 1.15rem; text-align: center; }
+.abcd-sym { text-align: center; color: var(--muted); font-size: 1.1rem; }
+.abcd-sums {
+  grid-column: 5 / 8;
+  display: flex; align-items: center; justify-content: center; gap: 0.1rem;
+  font-weight: bold;
+}
+.abcd-hint { margin: 14px 0 12px; color: var(--muted); font-size: 0.9em; }
 .abcd-msg { margin-top: 10px; min-height: 1.4em; }

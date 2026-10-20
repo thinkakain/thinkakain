@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Level 24 · Thinkakain</title>
-<link rel="stylesheet" href="../css/style.css?v=18">
+<link rel="stylesheet" href="../css/style.css?v=19">
 </head>
 <body>
 
@@ -12,31 +12,46 @@
 
 <main id="level-main" class="level-main">
   <section class="puzzle-card abcd-card">
-    <div class="abcd-row">
+    <div class="abcd-grid">
       <input class="abcd-box" id="inA" inputmode="numeric" maxlength="1" placeholder="A">
       <input class="abcd-box" id="inB" inputmode="numeric" maxlength="1" placeholder="B">
-      <span class="abcd-op">× 3</span>
+      <span class="abcd-opcell">× 3</span>
       <span class="abcd-eq">=</span>
-      <span class="abcd-out" id="outP1">···</span>
-    </div>
-    <div class="abcd-plus">+</div>
-    <div class="abcd-row">
+      <span class="abcd-digit" id="p1d1">·</span>
+      <span class="abcd-digit" id="p1d2">·</span>
+      <span class="abcd-digit" id="p1d3">·</span>
+      <span></span><span></span><span></span>
+
+      <span></span><span></span><span></span><span></span>
+      <span class="abcd-sym">+</span>
+      <span class="abcd-sym">+</span>
+      <span class="abcd-sym">+</span>
+      <span></span><span></span><span></span>
+
       <span class="abcd-fixed">7</span>
       <input class="abcd-box" id="inC" inputmode="numeric" maxlength="1" placeholder="C">
-      <span class="abcd-op">×</span>
-      <input class="abcd-box" id="inD" inputmode="numeric" maxlength="1" placeholder="D">
+      <span class="abcd-opcell abcd-opflex">× <input class="abcd-box abcd-box-d" id="inD" inputmode="numeric" maxlength="1" placeholder="D"></span>
       <span class="abcd-eq">=</span>
-      <span class="abcd-out" id="outP2">···</span>
-    </div>
-    <div class="abcd-arrow">↓</div>
-    <div class="abcd-row abcd-sum">
-      <span class="abcd-out" id="outC1">·</span>
-      <span class="abcd-op">+</span>
-      <span class="abcd-out" id="outC2">·</span>
-      <span class="abcd-op">+</span>
-      <span class="abcd-out" id="outC3">·</span>
+      <span class="abcd-digit" id="p2d1">·</span>
+      <span class="abcd-digit" id="p2d2">·</span>
+      <span class="abcd-digit" id="p2d3">·</span>
+      <span></span><span></span><span></span>
+
+      <span></span><span></span><span></span><span></span>
+      <span class="abcd-sym">↓</span>
+      <span class="abcd-sym">↓</span>
+      <span class="abcd-sym">↓</span>
+      <span></span><span></span><span></span>
+
+      <span></span><span></span><span></span><span></span>
+      <span class="abcd-sums">
+        <span class="abcd-digit abcd-digit-sm" id="cs1">·</span>+
+        <span class="abcd-digit abcd-digit-sm" id="cs2">·</span>+
+        <span class="abcd-digit abcd-digit-sm" id="cs3">·</span>
+      </span>
       <span class="abcd-eq">=</span>
-      <span class="abcd-out" id="outT">···</span>
+      <span class="abcd-digit" id="tD">·</span>
+      <span class="abcd-digit">1</span>
     </div>
     <div class="abcd-hint">A, B, C, D are different digits.</div>
     <button class="btn" id="abcdGo">Check</button>
@@ -55,33 +70,31 @@
     var v = document.getElementById(id).value.replace(/\D/g, "").slice(0, 1);
     return v === "" ? null : parseInt(v, 10);
   }
+  function setCells(ids, s) {
+    for (var i = 0; i < 3; i++) document.getElementById(ids[i]).textContent = s[i];
+  }
   function refresh() {
     var A = dig("inA"), B = dig("inB"), C = dig("inC"), D = dig("inD");
-    var p1 = document.getElementById("outP1");
-    var p2 = document.getElementById("outP2");
-    if (A === null || B === null) { p1.textContent = "···"; }
-    else {
-      var v = (10*A+B)*3;
-      p1.textContent = (v < 100 || v > 999) ? "✕" : String(v);
+    var v = null, w = null;
+    if (A !== null && B !== null) {
+      v = (10*A+B)*3;
+      if (v > 999) setCells(["p1d1","p1d2","p1d3"], "✕✕✕");
+      else setCells(["p1d1","p1d2","p1d3"], String(v).padStart(3, "·"));
+    } else setCells(["p1d1","p1d2","p1d3"], "···");
+    if (C !== null && D !== null) {
+      w = (70+C)*D;
+      if (w > 999) setCells(["p2d1","p2d2","p2d3"], "✕✕✕");
+      else setCells(["p2d1","p2d2","p2d3"], String(w).padStart(3, "0"));
+    } else setCells(["p2d1","p2d2","p2d3"], "···");
+    document.getElementById("tD").textContent = D === null ? "·" : String(D);
+    if (v === null || w === null || v < 100 || v > 999 || w > 999) {
+      setCells(["cs1","cs2","cs3"], "···");
+      return;
     }
-    if (C === null || D === null) { p2.textContent = "···"; }
-    else {
-      var w = (70+C)*D;
-      p2.textContent = w > 999 ? "✕" : String(w).padStart(3, "0");
-    }
-    // column sums
-    var c1 = document.getElementById("outC1"),
-        c2 = document.getElementById("outC2"),
-        c3 = document.getElementById("outC3"),
-        tt = document.getElementById("outT");
-    if (A===null||B===null||C===null||D===null) {
-      c1.textContent=c2.textContent=c3.textContent="·"; tt.textContent="···"; return;
-    }
-    var s1 = String((10*A+B)*3).padStart(3,"0"),
-        s2 = String((70+C)*D).padStart(3,"0");
-    var k1 = +s1[0] + +s2[0], k2 = +s1[1] + +s2[1], k3 = +s1[2] + +s2[2];
-    c1.textContent = k1; c2.textContent = k2; c3.textContent = k3;
-    tt.textContent = String(D) + "1 → " + (k1+k2+k3);
+    var s1 = String(v), s2 = String(w).padStart(3, "0");
+    document.getElementById("cs1").textContent = +s1[0] + +s2[0];
+    document.getElementById("cs2").textContent = +s1[1] + +s2[1];
+    document.getElementById("cs3").textContent = +s1[2] + +s2[2];
   }
   async function boot() {
     var ok = await Thinkakain.initLevel({ level: 24 });
