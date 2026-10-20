@@ -107,6 +107,7 @@
       var A=dig("inA"),B=dig("inB"),C=dig("inC"),D=dig("inD");
       var msg = document.getElementById("abcdMsg");
       if (A===null||B===null||C===null||D===null) { msg.textContent = "Fill all four digits."; return; }
+      if (new Set([A,B,C,D]).size < 4) { msg.textContent = "Digits must all be different."; return; }
       msg.textContent = "Checking…";
       try {
         var r = await Thinkakain.submitAbcd(24, A, B, C, D);
