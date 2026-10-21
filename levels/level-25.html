@@ -28,26 +28,24 @@
   "use strict";
   // A giant mosaic: 448 x 314 pixels, each pixel 20px, fixed scale.
   // No zoom — drag to pan. Hidden in single pixels across the map:
-  // a START cluster with an arrow, then a chain of letters, each with
-  // an arrow beside it pointing to the next.
+  // a closed loop of letters, each with an arrow beside it pointing
+  // exactly along the ray to the next letter. Find any one of them
+  // and follow the loop all the way around.
   var COLS = 448, ROWS = 314, CELL = 20, SCALE = 1.6;
   var IW = COLS * CELL, IH = ROWS * CELL;
-  var START = { x: 70, y: 250 };
   var LETTERS = [
-    { ch: "W", x: 111, y: 285, a: "→" }, { ch: "H", x: 150, y: 284, a: "→" },
-    { ch: "O", x: 219, y: 286, a: "↑" }, { ch: "S", x: 220, y: 239, a: "←" },
-    { ch: "A", x: 184, y: 240, a: "↖" }, { ch: "I", x: 131, y: 187, a: "↖" },
-    { ch: "D", x: 88, y: 147, a: "↖" }, { ch: "B", x: 33, y: 90, a: "→" },
-    { ch: "A", x: 99, y: 88, a: "↑" }, { ch: "Z", x: 101, y: 48, a: "→" },
-    { ch: "I", x: 150, y: 46, a: "↙" }, { ch: "N", x: 110, y: 87, a: "↖" },
-    { ch: "G", x: 65, y: 42, a: "↓" }, { ch: "A", x: 64, y: 110 }
+    { ch: "W", x: 256, y: 149, a: "↙" }, { ch: "H", x: 214, y: 191, a: "↓" },
+    { ch: "O", x: 214, y: 243, a: "←" }, { ch: "S", x: 156, y: 243, a: "↓" },
+    { ch: "A", x: 156, y: 300, a: "→" }, { ch: "I", x: 212, y: 300, a: "↑" },
+    { ch: "D", x: 212, y: 253, a: "←" }, { ch: "B", x: 166, y: 253, a: "↘" },
+    { ch: "A", x: 210, y: 297, a: "↗" }, { ch: "Z", x: 278, y: 229, a: "→" },
+    { ch: "I", x: 327, y: 229, a: "↑" }, { ch: "N", x: 327, y: 188, a: "↙" },
+    { ch: "G", x: 256, y: 259, a: "↑" }, { ch: "A", x: 256, y: 197, a: "↑" }
   ];
   var DIRS = { "→": [1, 0], "↘": [1, 1], "↓": [0, 1], "↙": [-1, 1], "←": [-1, 0], "↖": [-1, -1], "↑": [0, -1], "↗": [1, -1] };
 
   var special = {};
   function mark(x, y, glyph) { special[x + "," + y] = glyph; }
-  "START".split("").forEach(function (ch, i) { mark(START.x + i, START.y, ch); });
-  mark(START.x + 5, START.y, "↘");
   LETTERS.forEach(function (L) {
     mark(L.x, L.y, L.ch);
     if (L.a) {
