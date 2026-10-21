@@ -1055,3 +1055,16 @@ body.black-bg { background: #000; }
 }
 .abcd-hint { margin: 14px 0 12px; color: var(--muted); font-size: 0.9em; }
 .abcd-msg { margin-top: 10px; min-height: 1.4em; }
+
+/* ---------- level 25 zoom ---------- */
+.zoom-card { padding: 10px; }
+.zoom-stage {
+  position: relative; overflow: hidden; height: 62vh; min-height: 320px;
+  border: 2px solid var(--line); border-radius: 10px; background: #0d1330;
+  touch-action: none; cursor: grab;
+}
+.zoom-img {
+  position: absolute; left: 0; top: 0; width: 1280px; height: 880px;
+  transform-origin: 0 0; image-rendering: pixelated; user-select: none;
+  -webkit-user-drag: none; pointer-events: none;
+}
