@@ -128,6 +128,12 @@
       if (r.error) throw r.error;
       return r.data;
     },
+    // Case-sensitive variant: the guess must match exactly.
+    validateGuessExact: async function (level, guess) {
+      var r = await db().rpc("validate_guess_exact", { p_level: level, p_guess: guess });
+      if (r.error) throw r.error;
+      return r.data;
+    },
     validateHold: async function (level, holdMs) {
       var r = await db().rpc("validate_hold",
         { p_level: level, p_hold_ms: Math.round(holdMs) });

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 26 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css?v=19">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card photo-card">
+    <img class="level-photo" src="../assets/level-26.jpg"
+         alt="The Last Supper">
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 26 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(26, {
+      exact: true,
+      successFlavor: "Exactly as written.",
+      wrongMessage: "Not quite. Try again."
+    });
+    // This level is case-sensitive: stop the keyboard forcing ALL CAPS
+    // or "correcting" the entry.
+    var input = document.querySelector(".passcode-input");
+    if (input) {
+      input.setAttribute("autocapitalize", "none");
+      input.setAttribute("autocorrect", "off");
+    }
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
