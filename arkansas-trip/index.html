@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arkansas Family Road Trip — Nov 22–26, 2026</title>
+<meta name="description" content="Family road trip dashboard: Allen, Texas to Petit Jean State Park and Hot Springs, Arkansas, November 22–26, 2026.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --ink:#2b2118; --muted:#6f5f52; --paper:#fffaf2; --card:#ffffff;
+    --pine:#2e5d46; --pine-dark:#234739; --gold:#c98a2d; --gold-soft:#fdf0d5;
+    --rust:#b4552d; --line:#e8dccb; --booked:#2e7d4f; --pending:#b4552d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55}
+  a{color:var(--pine)}
+  .hero{background:linear-gradient(160deg,#234739,#2e5d46 55%,#3f7a5c);color:#fff;padding:2.5rem 1.25rem 2rem}
+  .hero-inner{max-width:960px;margin:0 auto}
+  .hero h1{margin:.25rem 0 .5rem;font-size:2.1rem;line-height:1.15}
+  .hero p{margin:.25rem 0;opacity:.92}
+  .eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;opacity:.85}
+  .wrap{max-width:960px;margin:0 auto;padding:1.25rem}
+  .nav{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.25rem 0 0}
+  .nav a{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;padding:.45rem .8rem;border-radius:999px;font-size:.92rem}
+  .nav a:hover{background:rgba(255,255,255,.3)}
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin:1.25rem 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
+  .stat b{display:block;font-size:1.25rem}
+  .stat span{color:var(--muted);font-size:.9rem}
+  .route{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;background:var(--gold-soft);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin:1.25rem 0}
+  .route .leg{font-weight:700}
+  .route .mi{color:var(--muted);font-size:.9rem}
+  h2{font-size:1.4rem;margin:2rem 0 .75rem}
+  .day{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem 1.25rem 1rem;margin:0 0 1.25rem;scroll-margin-top:1rem}
+  .day h3{margin:0 0 .15rem;font-size:1.25rem}
+  .day .date{color:var(--muted);margin:0 0 .75rem}
+  .badge{display:inline-block;font-size:.8rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
+  .booked{background:#e2f2e8;color:var(--booked)}
+  .pending{background:#fbe9dd;color:var(--pending)}
+  .sleep,.drive,.todo{margin:.6rem 0}
+  .sleep b,.drive b{color:var(--pine-dark)}
+  ul{margin:.4rem 0 .6rem 1.2rem;padding:0}
+  li{margin:.25rem 0}
+  .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0 .25rem}
+  .btn{display:inline-block;text-decoration:none;border:1px solid var(--pine);color:var(--pine);padding:.4rem .8rem;border-radius:999px;font-size:.9rem}
+  .btn:hover{background:var(--pine);color:#fff}
+  .btn.gold{border-color:var(--gold);color:#8a5a12}
+  .btn.gold:hover{background:var(--gold);color:#fff}
+  .places{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem}
+  .place{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem}
+  .place h3{margin:0 0 .25rem;font-size:1.05rem}
+  .place p{margin:0 0 .6rem;color:var(--muted);font-size:.92rem}
+  .note{background:var(--gold-soft);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+  .note ul{margin:.4rem 0 .2rem 1.2rem}
+  #tripmap{height:420px;width:100%;border:1px solid var(--line);border-radius:16px;z-index:0}
+  .map-note{color:var(--muted);font-size:.9rem;margin:.5rem 0 0}
+  footer{color:var(--muted);font-size:.9rem;text-align:center;padding:1.5rem 1rem 2.5rem}
+  @media (max-width:560px){.hero h1{font-size:1.6rem}.hero{padding:2rem 1rem 1.5rem}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Family road trip · Thanksgiving week</div>
+    <h1>🍂 Arkansas Family Road Trip</h1>
+    <p><strong>Sun Nov 22 – Thu Nov 26, 2026</strong> · Allen, Texas → Petit Jean State Park → Hot Springs → home</p>
+    <p>2 adults + 2 children (ages 12 &amp; 15) · 1 room everywhere, sleeping 4</p>
+    <nav class="nav" aria-label="Jump to a day">
+      <a href="#day1">Sun 22 · Petit Jean</a>
+      <a href="#day2">Mon 23 · Petit Jean</a>
+      <a href="#day3">Tue 24 · The Dome</a>
+      <a href="#day4">Wed 25 · Hot Springs</a>
+      <a href="#day5">Thu 26 · Home</a>
+      <a href="#places">All places</a>
+      <a href="#bookings">Bookings</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2 id="map">Trip map</h2>
+  <div id="tripmap" role="img" aria-label="Map of the trip: Allen, Petit Jean State Park, and Hot Springs"></div>
+  <p class="map-note">Pins show every place in the plan. The dotted line is the route overview (straight lines, not turn-by-turn driving directions — use the directions links above for that). Tap a pin for the day it belongs to.</p>
+
+  <section class="strip" aria-label="Trip at a glance">
+    <div class="stat"><b>5 days</b><span>Nov 22–26, 2026</span></div>
+    <div class="stat"><b>4 nights</b><span>2 cabins · 1 dome · 1 hotel</span></div>
+    <div class="stat"><b>$931.87 booked</b><span>cabins + dome + Garvan</span></div>
+    <div class="stat"><b>1 left to book</b><span>Hampton Inn, Wed night</span></div>
+  </section>
+
+  <section class="route" aria-label="Route">
+    <span class="leg">Allen, TX</span> <span class="mi">→ ~330 mi / ~5½ hrs →</span>
+    <span class="leg">Petit Jean</span> <span class="mi">→ ~90 mi / ~1½ hrs →</span>
+    <span class="leg">Hot Springs</span> <span class="mi">→ ~280 mi / ~4½ hrs →</span>
+    <span class="leg">Allen, TX</span>
+    <span class="btns" style="margin:0">
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;origin=Allen,+TX&amp;destination=Petit+Jean+State+Park,+AR" target="_blank" rel="noopener">Directions: Allen → Petit Jean</a>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;origin=Petit+Jean+State+Park,+AR&amp;destination=Hot+Springs,+AR" target="_blank" rel="noopener">Petit Jean → Hot Springs</a>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;origin=Hot+Springs,+AR&amp;destination=Allen,+TX" target="_blank" rel="noopener">Hot Springs → Allen</a>
+    </span>
+  </section>
+
+  <h2 id="days">The days</h2>
+
+  <article class="day" id="day1">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Day 1 — Arrival at Petit Jean</h3>
+    <p class="date">Sunday, November 22, 2026</p>
+    <p class="drive"><b>Drive:</b> Allen → Petit Jean State Park, ~330 mi / ~5½ hrs.</p>
+    <p class="sleep"><b>Sleep:</b> Cabin <strong>004</strong> — 1BR Duplex, 2 Queen beds. Reservation <strong>#1052856</strong>, $183.85 all-in. Check-in 4:00 PM. Guest name: Nuttanan Kunnitiphan.</p>
+    <ul>
+      <li>Easy first afternoon: Cedar Falls Overlook boardwalk</li>
+      <li>Red Bluff Drive and Petit Jean's grave overlooks at sunset</li>
+      <li>Dinner at the Mather Lodge restaurant</li>
+    </ul>
+    <div class="btns">
+      <a class="btn" href="https://reserve.arkansasstateparks.com" target="_blank" rel="noopener">Petit Jean reservations</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Petit+Jean+State+Park+AR" target="_blank" rel="noopener">Map: Petit Jean</a>
+    </div>
+  </article>
+
+  <article class="day" id="day2">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Day 2 — Petit Jean trails + cabin move</h3>
+    <p class="date">Monday, November 23, 2026</p>
+    <p class="sleep"><b>Sleep:</b> Cabin <strong>030</strong> — Duplex, 2 Double beds. Reservation <strong>#1052857</strong>, $145.53 all-in. Check-in 4:00 PM.</p>
+    <p><strong>⚠️ Cabin move today:</strong> check out of cabin 004 at 11:00 AM, bags in the car, trails during the day, check in to cabin 030 at 4:00 PM. No single cabin covered both nights.</p>
+    <ul>
+      <li><strong>Cedar Falls Trail</strong> — 2 mi round trip, 95-ft falls, 1½–2½ hrs (steep on the way back)</li>
+      <li><strong>Seven Hollows Trail</strong> — 4.5 mi, the park's best trail</li>
+      <li>Bear Cave boulders and Rock House Cave</li>
+      <li>Museum of Automobiles</li>
+    </ul>
+    <div class="btns">
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Cedar+Falls+Trail+Petit+Jean+State+Park" target="_blank" rel="noopener">Map: Cedar Falls Trail</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Seven+Hollows+Trail+Petit+Jean" target="_blank" rel="noopener">Map: Seven Hollows</a>
+    </div>
+  </article>
+
+  <article class="day" id="day3">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Day 3 — To Hot Springs, night in the dome</h3>
+    <p class="date">Tuesday, November 24, 2026</p>
+    <p class="drive"><b>Drive:</b> Petit Jean → Hot Springs, ~90 mi / ~1½ hrs.</p>
+    <p class="sleep"><b>Sleep:</b> <strong>Honeybee Geodesic Dome — Deluxe Dome, Starlight Haven</strong> (148 Jubilee Trail, Hot Springs). Hipcamp booking <strong>#4486638</strong>, $481.49 all-in. Check-in 4:00 PM, check-out Wed 11:00 AM. 4 guests.</p>
+    <ul>
+      <li>Bathhouse Row — Fordyce Bathhouse (free National Park Service museum)</li>
+      <li>Grand Promenade at golden hour</li>
+    </ul>
+    <div class="btns">
+      <a class="btn" href="https://www.visitstarlight.com" target="_blank" rel="noopener">Starlight Haven</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Starlight+Haven+Hot+Springs+AR" target="_blank" rel="noopener">Map: Starlight Haven</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Bathhouse+Row+Hot+Springs+AR" target="_blank" rel="noopener">Map: Bathhouse Row</a>
+    </div>
+  </article>
+
+  <article class="day" id="day4">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Day 4 — Hot Springs + Garvan Holiday Lights</h3>
+    <p class="date">Wednesday, November 25, 2026</p>
+    <ul>
+      <li>Hot Springs Mountain Tower and mountain trails</li>
+      <li><strong>Bathhouse soak: Buckstaff Baths</strong> — all four of us can go (ages 10+). Note: Quapaw Baths does <em>not</em> admit anyone under 14, so our 12-year-old can't use Quapaw.</li>
+      <li><strong>Garvan Woodland Gardens Holiday Lights, 5:00 PM timed entry</strong> — confirmation <strong>#70781106</strong>, $121: 3 Adult (13+) + 1 Child (4–12). 550 Arkridge Rd, Hot Springs.</li>
+    </ul>
+    <p><strong>⚠️ Bring the e-tickets, not just the confirmation email</strong> — the gate scans the e-tickets with Print/PDF links sent to nopy_yoyo@hotmail.com. Download or print them before leaving the dome.</p>
+    <p class="sleep"><span class="badge pending">○ Not yet booked</span><br>
+    <b>Sleep (to book):</b> <strong>Hampton Inn Hot Springs</strong>, 151 Temperance Hill Road, Hot Springs, AR 71913 — 2 Queen Beds, sleeps 4, 1 night. Last seen ~$110 (Hilton Honors rate) / ~$116 non-member.</p>
+    <div class="btns">
+      <a class="btn gold" href="https://www.garvangardens.org" target="_blank" rel="noopener">Garvan Woodland Gardens</a>
+      <a class="btn" href="https://www.buckstaffbaths.com" target="_blank" rel="noopener">Buckstaff Baths</a>
+      <a class="btn" href="https://www.hilton.com" target="_blank" rel="noopener">Hampton Inn (Hilton)</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Garvan+Woodland+Gardens+Hot+Springs+AR" target="_blank" rel="noopener">Map: Garvan</a>
+    </div>
+  </article>
+
+  <article class="day" id="day5">
+    <span class="badge booked">✓ Home day</span>
+    <h3>Day 5 — Home for Thanksgiving</h3>
+    <p class="date">Thursday, November 26, 2026 (Thanksgiving Day)</p>
+    <p class="drive"><b>Drive:</b> Hot Springs → Allen, ~280 mi / ~4½ hrs. Leave 9–10 AM, home early afternoon.</p>
+    <p>Nearly everything in Hot Springs is closed on Thanksgiving Day, so it's a straight drive home — no sightseeing planned.</p>
+  </article>
+
+  <h2 id="bookings">Bookings at a glance</h2>
+  <section class="places">
+    <div class="place"><h3>Petit Jean — Night 1</h3><p>Cabin 004, 1BR Duplex 2 Queen · Nov 22–23 · Res. #1052856 · $183.85 · $45 deposit paid</p><span class="badge booked">✓ Booked</span></div>
+    <div class="place"><h3>Petit Jean — Night 2</h3><p>Cabin 030, Duplex 2 Doubles · Nov 23–24 · Res. #1052857 · $145.53 · $45 deposit paid</p><span class="badge booked">✓ Booked</span></div>
+    <div class="place"><h3>Starlight Deluxe Dome</h3><p>Honeybee Geodesic Dome · Nov 24–25 · Hipcamp #4486638 · $481.49</p><span class="badge booked">✓ Booked</span></div>
+    <div class="place"><h3>Garvan Holiday Lights</h3><p>Wed Nov 25, 5:00 PM · Conf. #70781106 · 3 Adult + 1 Child · $121</p><span class="badge booked">✓ Booked</span></div>
+    <div class="place"><h3>Hampton Inn Hot Springs</h3><p>Wed Nov 25–26 · 2 Queen Beds · ~$110 Honors / ~$116 non-member</p><span class="badge pending">○ To book</span></div>
+  </section>
+  <p style="color:var(--muted)">Booked total so far: <strong>$329.38 cabins + $481.49 dome + $121 Garvan = $931.87</strong>. Hampton Inn is the only stay still to book.</p>
+
+  <h2 id="places">All places</h2>
+  <section class="places">
+    <div class="place"><h3>Petit Jean State Park</h3><p>Cabins, Cedar Falls, Seven Hollows, Bear Cave, Rock House Cave, Museum of Automobiles.</p><a class="btn" href="https://reserve.arkansasstateparks.com" target="_blank" rel="noopener">Reservations</a></div>
+    <div class="place"><h3>Starlight Haven</h3><p>Honeybee Geodesic Dome — Deluxe Dome, 148 Jubilee Trail, Hot Springs.</p><a class="btn" href="https://www.visitstarlight.com" target="_blank" rel="noopener">Visit site</a></div>
+    <div class="place"><h3>Garvan Woodland Gardens</h3><p>Holiday Lights, 550 Arkridge Rd, Hot Springs. Timed entry, 5–9 PM Sun–Thu.</p><a class="btn" href="https://www.garvangardens.org" target="_blank" rel="noopener">Visit site</a></div>
+    <div class="place"><h3>Hampton Inn Hot Springs</h3><p>151 Temperance Hill Road, Hot Springs, AR 71913. To book for Wed Nov 25.</p><a class="btn" href="https://www.hilton.com" target="_blank" rel="noopener">Hilton</a></div>
+    <div class="place"><h3>Bathhouse Row, Hot Springs</h3><p>Fordyce Bathhouse (free NPS museum), Grand Promenade, Buckstaff Baths (ages 10+).</p><a class="btn" href="https://www.nps.gov/hosp" target="_blank" rel="noopener">Hot Springs National Park</a></div>
+    <div class="place"><h3>Hot Springs Mountain Tower</h3><p>Summit views and mountain trails above downtown Hot Springs.</p><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Hot+Springs+Mountain+Tower+AR" target="_blank" rel="noopener">Map</a></div>
+  </section>
+
+  <h2>Good to know</h2>
+  <section class="note">
+    <ul>
+      <li><strong>Monday cabin move:</strong> out of cabin 004 at 11:00 AM, into cabin 030 at 4:00 PM.</li>
+      <li><strong>Cabin deposits</strong> ($45 each) are non-refundable; cancel 15+ days ahead to lose only the deposit.</li>
+      <li><strong>Garvan:</strong> the gate scans the e-tickets, not the confirmation email — download/print the PDFs first.</li>
+      <li><strong>Soak:</strong> Buckstaff serves ages 10+, so all four can go; Quapaw admits nobody under 14.</li>
+      <li><strong>Late November weather:</strong> highs in the 50s–60s °F, nights near freezing on the mountains; sunset around 5:00 PM.</li>
+      <li><strong>Thanksgiving Day:</strong> nearly everything in Hot Springs is closed — that's why Thursday is just the drive home.</li>
+    </ul>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var map = L.map('tripmap');
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  var places = [
+    [33.10162, -96.67449, '🏠 Allen, TX — home', 'Start and finish. <a href="#day1">Day 1</a> · <a href="#day5">Day 5</a>'],
+    [35.11819, -92.93386, '🛖 Petit Jean cabins &amp; Mather Lodge', 'Cabins 004 (Sun) &amp; 030 (Mon). <a href="#day1">Day 1</a> · <a href="#day2">Day 2</a>'],
+    [35.11558, -92.94137, '🥾 Cedar Falls Trail', '2 mi round trip, 95-ft falls. <a href="#day2">Day 2</a>'],
+    [35.12895, -92.91939, '🥾 Seven Hollows Trail area', '4.5 mi, the park\u2019s best trail. <a href="#day2">Day 2</a>'],
+    [34.55122, -93.09093, '🔮 Starlight Haven — Deluxe Dome', 'Honeybee Geodesic Dome, Tue night. <a href="#day3">Day 3</a>'],
+    [34.51189, -93.05357, '🛁 Bathhouse Row &amp; Fordyce Bathhouse', 'Free NPS museum, Grand Promenade. <a href="#day3">Day 3</a>'],
+    [34.51943, -93.04491, '🗼 Hot Springs Mountain Tower', 'Summit views &amp; mountain trails. <a href="#day4">Day 4</a>'],
+    [34.45369, -93.07607, '🏨 Hampton Inn Hot Springs', 'Wed night — still to book. <a href="#day4">Day 4</a>'],
+    [34.43476, -93.04565, '✨ Garvan Woodland Gardens', 'Holiday Lights, Wed 5:00 PM. <a href="#day4">Day 4</a>']
+  ];
+  var bounds = [];
+  places.forEach(function(p) {
+    L.marker([p[0], p[1]]).addTo(map).bindPopup('<b>' + p[2] + '</b><br>' + p[3]);
+    bounds.push([p[0], p[1]]);
+  });
+  L.polyline([
+    [33.10162, -96.67449],
+    [35.11819, -92.93386],
+    [34.55122, -93.09093],
+    [34.43476, -93.04565],
+    [33.10162, -96.67449]
+  ], {color: '#2e5d46', weight: 3, dashArray: '6 6', opacity: 0.8}).addTo(map);
+  map.fitBounds(bounds, {padding: [30, 30]});
+</script>
+<footer>
+  Arkansas Family Road Trip · Nov 22–26, 2026 · Allen, TX → Petit Jean → Hot Springs → home<br>
+  Built for the family — bookings as confirmed Oct 24, 2026. Hampton Inn Wed night still to book.
+</footer>
+</body>
+</html>
