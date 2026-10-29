@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 27 · Thinkakain</title>
+<link rel="stylesheet" href="../css/style.css?v=19">
+</head>
+<body>
+
+<header id="tower-header"></header>
+
+<main id="level-main" class="level-main">
+  <section class="puzzle-card photo-card">
+    <p>The word you say to encourage someone to stay strong in Breaking Bad style.</p>
+    <img class="level-photo" src="../assets/level-27.jpg"
+         alt="Breaking Bad">
+  </section>
+  <div id="passcode-slot"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/config.js?v=2"></script>
+<script src="../js/backend.js"></script>
+<script src="../js/engine.js"></script>
+<script>
+(function () {
+  "use strict";
+  async function boot() {
+    var ok = await Thinkakain.initLevel({ level: 27 });
+    if (!ok) return;
+    Thinkakain.mountPasscode(27, {
+      successFlavor: "Hank's in there — the GPS on the ticket.",
+      wrongMessage: "Not quite. Try again."
+    });
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

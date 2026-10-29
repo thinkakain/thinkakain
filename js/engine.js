@@ -19,7 +19,7 @@
   "use strict";
 
   var TOTAL_LEVELS = 30;
-  var BUILT_LEVELS = 26; // bump as levels are built, one at a time
+  var BUILT_LEVELS = 27; // bump as levels are built, one at a time
 
   var cfg = null;
   var progressCache = null;
