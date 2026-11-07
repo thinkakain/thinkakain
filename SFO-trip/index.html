@@ -80,7 +80,7 @@
 
 <main class="wrap">
   <h2 id="map">Trip map</h2>
-  <div id="tripmap" role="img" aria-label="Map of the trip: Dallas/Fort Worth, San Francisco, and Yosemite Valley Lodge"></div>
+  <div id="tripmap" role="img" aria-label="Map of the trip: San Francisco and Yosemite Valley Lodge"></div>
   <p class="map-note">Pins show every place in the plan. The dotted line is the route overview (straight lines, not turn-by-turn driving directions — use the directions links below for that). Tap a pin for the part of the trip it belongs to.</p>
 
   <section class="strip" aria-label="Trip at a glance">
@@ -214,7 +214,6 @@
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
   var places = [
-    [32.8998, -97.0403, '✈️ Dallas/Fort Worth (DFW)', 'Fly out Dec 20, 7:00 AM · fly home Dec 28, 5:31 AM. <a href="#day1">Fly out</a> · <a href="#day4">Fly home</a>'],
     [37.6213, -122.3790, '✈️ San Francisco (SFO)', 'Arrive Dec 20, 8:57 AM · depart Dec 27, 11:59 PM. <a href="#day1">Fly out</a> · <a href="#day4">Fly home</a>'],
     [37.7456, -119.5986, '🏨 Yosemite Valley Lodge', 'Two rooms, Dec 21–24. <a href="#day2">Yosemite</a>'],
     [37.7749, -122.4194, '🌉 San Francisco', 'Tourist days, plan open. <a href="#day3">San Francisco</a>']
@@ -225,11 +224,9 @@
     bounds.push([p[0], p[1]]);
   });
   L.polyline([
-    [32.8998, -97.0403],
     [37.6213, -122.3790],
     [37.7456, -119.5986],
-    [37.7749, -122.4194],
-    [32.8998, -97.0403]
+    [37.7749, -122.4194]
   ], {color: '#2e5d46', weight: 3, dashArray: '6 6', opacity: 0.8}).addTo(map);
   map.fitBounds(bounds, {padding: [30, 30]});
 </script>
