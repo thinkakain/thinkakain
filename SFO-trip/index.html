@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>San Francisco &amp; Yosemite Trip — Dec 20–28, 2026</title>
+<meta name="description" content="Family trip dashboard: Dallas/Fort Worth to San Francisco and Yosemite National Park, December 20–28, 2026.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root{
+    --ink:#2b2118; --muted:#6f5f52; --paper:#fffaf2; --card:#ffffff;
+    --pine:#2e5d46; --pine-dark:#234739; --gold:#c98a2d; --gold-soft:#fdf0d5;
+    --rust:#b4552d; --line:#e8dccb; --booked:#2e7d4f; --pending:#b4552d;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--paper);line-height:1.55}
+  a{color:var(--pine)}
+  .hero{background:linear-gradient(160deg,#234739,#2e5d46 55%,#3f7a5c);color:#fff;padding:2.5rem 1.25rem 2rem}
+  .hero-inner{max-width:960px;margin:0 auto}
+  .hero h1{margin:.25rem 0 .5rem;font-size:2.1rem;line-height:1.15}
+  .hero p{margin:.25rem 0;opacity:.92}
+  .eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;opacity:.85}
+  .wrap{max-width:960px;margin:0 auto;padding:1.25rem}
+  .nav{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.25rem 0 0}
+  .nav a{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);color:#fff;text-decoration:none;padding:.45rem .8rem;border-radius:999px;font-size:.92rem}
+  .nav a:hover{background:rgba(255,255,255,.3)}
+  .strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem;margin:1.25rem 0}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem}
+  .stat b{display:block;font-size:1.25rem}
+  .stat span{color:var(--muted);font-size:.9rem}
+  .route{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;background:var(--gold-soft);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin:1.25rem 0}
+  .route .leg{font-weight:700}
+  .route .mi{color:var(--muted);font-size:.9rem}
+  h2{font-size:1.4rem;margin:2rem 0 .75rem}
+  .day{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:1.25rem 1.25rem 1rem;margin:0 0 1.25rem;scroll-margin-top:1rem}
+  .day h3{margin:0 0 .15rem;font-size:1.25rem}
+  .day .date{color:var(--muted);margin:0 0 .75rem}
+  .badge{display:inline-block;font-size:.8rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;margin-bottom:.6rem}
+  .booked{background:#e2f2e8;color:var(--booked)}
+  .pending{background:#fbe9dd;color:var(--pending)}
+  .sleep,.drive,.todo{margin:.6rem 0}
+  .sleep b,.drive b{color:var(--pine-dark)}
+  ul{margin:.4rem 0 .6rem 1.2rem;padding:0}
+  li{margin:.25rem 0}
+  .btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:.75rem 0 .25rem}
+  .btn{display:inline-block;text-decoration:none;border:1px solid var(--pine);color:var(--pine);padding:.4rem .8rem;border-radius:999px;font-size:.9rem}
+  .btn:hover{background:var(--pine);color:#fff}
+  .btn.gold{border-color:var(--gold);color:#8a5a12}
+  .btn.gold:hover{background:var(--gold);color:#fff}
+  .places{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem}
+  .place{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem}
+  .place h3{margin:0 0 .25rem;font-size:1.05rem}
+  .place p{margin:0 0 .6rem;color:var(--muted);font-size:.92rem}
+  .note{background:var(--gold-soft);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+  .note ul{margin:.4rem 0 .2rem 1.2rem}
+  #tripmap{height:420px;width:100%;border:1px solid var(--line);border-radius:16px;z-index:0}
+  .map-note{color:var(--muted);font-size:.9rem;margin:.5rem 0 0}
+  footer{color:var(--muted);font-size:.9rem;text-align:center;padding:1.5rem 1rem 2.5rem}
+  @media (max-width:560px){.hero h1{font-size:1.6rem}.hero{padding:2rem 1rem 1.5rem}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Family trip · Christmas week</div>
+    <h1>🌉 San Francisco &amp; Yosemite</h1>
+    <p><strong>Sun Dec 20 – Mon Dec 28, 2026</strong> · Dallas/Fort Worth → San Francisco → Yosemite → San Francisco → home</p>
+    <p>8 travelers out · 7 travelers back (Papassorn flies out with us, returns separately)</p>
+    <nav class="nav" aria-label="Jump to a section">
+      <a href="#day1">Dec 20 · Fly out</a>
+      <a href="#day2">Dec 21–24 · Yosemite</a>
+      <a href="#day3">Dec 24–29 · San Francisco</a>
+      <a href="#day4">Dec 27 · Fly home</a>
+      <a href="#places">All places</a>
+      <a href="#bookings">Bookings</a>
+      <a href="#documents">Documents</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2 id="map">Trip map</h2>
+  <div id="tripmap" role="img" aria-label="Map of the trip: Dallas/Fort Worth, San Francisco, and Yosemite Valley Lodge"></div>
+  <p class="map-note">Pins show every place in the plan. The dotted line is the route overview (straight lines, not turn-by-turn driving directions — use the directions links below for that). Tap a pin for the part of the trip it belongs to.</p>
+
+  <section class="strip" aria-label="Trip at a glance">
+    <div class="stat"><b>9 days</b><span>Dec 20–28, 2026</span></div>
+    <div class="stat"><b>3 nights</b><span>Yosemite Valley Lodge</span></div>
+    <div class="stat"><b>$4,913.88 booked</b><span>flights $3,186.00 + lodge $1,727.88</span></div>
+    <div class="stat"><b>1 left to book</b><span>San Francisco hotel</span></div>
+  </section>
+
+  <section class="route" aria-label="Route">
+    <span class="leg">Dallas/Fort Worth</span> <span class="mi">→ ✈️ 3h 57m →</span>
+    <span class="leg">San Francisco</span> <span class="mi">→ 🚗 ~170 mi / ~3 hrs →</span>
+    <span class="leg">Yosemite</span> <span class="mi">→ 🚗 ~170 mi / ~3 hrs →</span>
+    <span class="leg">San Francisco</span> <span class="mi">→ ✈️ 3h 32m →</span>
+    <span class="leg">Dallas/Fort Worth</span>
+    <span class="btns" style="margin:0">
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;origin=San+Francisco+International+Airport&amp;destination=Yosemite+Valley+Lodge,+Yosemite+National+Park,+CA" target="_blank" rel="noopener">Directions: SFO → Yosemite</a>
+      <a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;origin=Yosemite+Valley+Lodge,+Yosemite+National+Park,+CA&amp;destination=San+Francisco,+CA" target="_blank" rel="noopener">Yosemite → San Francisco</a>
+    </span>
+  </section>
+
+  <h2 id="days">The trip</h2>
+
+  <article class="day" id="day1">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Day 1 — Fly out to San Francisco</h3>
+    <p class="date">Sunday, December 20, 2026</p>
+    <p class="drive"><b>Flight:</b> American Airlines <strong>AA 1721</strong>, DFW → SFO, departs <strong>7:00 AM</strong>, arrives <strong>8:57 AM</strong> (3h 57m, nonstop). Basic Economy, non-refundable, no changes. Confirmation <strong>DXPXJB</strong>. 8 adults, $205.40 each, <strong>$1,643.20 total</strong>. Seats in rows 22–23.</p>
+    <p>Morning flight — plan to be at DFW early. Carry-on is included on American Basic Economy.</p>
+    <div class="btns">
+      <a class="btn gold" href="american-airlines-dfw-sfo-ticket-dec20.pdf" target="_blank" rel="noopener">📄 Ticket receipt — AA 1721</a>
+      <a class="btn" href="american-airlines-dfw-sfo-itinerary-dec20.pdf" target="_blank" rel="noopener">📄 Itinerary view — AA 1721</a>
+    </div>
+  </article>
+
+  <article class="day" id="day2">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Days 2–4 — Yosemite Valley Lodge</h3>
+    <p class="date">Monday, December 21 – Thursday, December 24, 2026 (3 nights)</p>
+    <p class="drive"><b>Drive:</b> San Francisco → Yosemite Valley Lodge, ~170 mi / ~3 hrs.</p>
+    <p class="sleep"><b>Sleep:</b> <strong>Yosemite Valley Lodge</strong>, 9006 Yosemite Lodge Dr, Yosemite National Park, CA 95389. Two rooms, Traditional Room with 2 beds, 4 adults each:</p>
+    <ul>
+      <li>Room 1 — Confirmation <strong>1735PC</strong> · $863.94 <a class="btn" href="yosemite-valley-lodge-room1-dec21.pdf" target="_blank" rel="noopener">📄 Reservation PDF — room 1</a></li>
+      <li>Room 2 — Confirmation <strong>1735PD</strong> · $863.94 <a class="btn" href="yosemite-valley-lodge-room2-dec21.pdf" target="_blank" rel="noopener">📄 Reservation PDF — room 2</a></li>
+    </ul>
+    <p>Two rooms together: <strong>$1,727.88</strong>. Check-in 4:00 PM, check-out 11:00 AM. Same itinerary number for both rooms: 10005M6NM.</p>
+    <p><strong>⚠️ Wi-Fi is limited in the valley</strong> — download maps, tickets, and anything else you need before arriving.</p>
+    <ul>
+      <li>Yosemite Valley: El Capitan, Half Dome views, Yosemite Falls</li>
+      <li>Valley floor walks and viewpoints — easy for the whole group</li>
+    </ul>
+    <div class="btns">
+      <a class="btn" href="https://www.travelyosemite.com" target="_blank" rel="noopener">Travel Yosemite</a>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Yosemite+Valley+Lodge+Yosemite+National+Park" target="_blank" rel="noopener">Map: Yosemite Valley Lodge</a>
+      <a class="btn" href="https://www.nps.gov/yose" target="_blank" rel="noopener">Yosemite National Park (NPS)</a>
+    </div>
+  </article>
+
+  <article class="day" id="day3">
+    <span class="badge pending">○ Plan open</span>
+    <h3>Days 5–9 — San Francisco</h3>
+    <p class="date">December 24–29, 2026 · plan still open</p>
+    <p>After Yosemite we head back to San Francisco for the tourist days. The plan for these days is still open — places to pick from:</p>
+    <ul>
+      <li>Golden Gate Bridge and the waterfront</li>
+      <li>Fisherman's Wharf &amp; Pier 39</li>
+      <li>Alcatraz (book ahead — it sells out)</li>
+      <li>Chinatown, Union Square, Lombard Street</li>
+      <li>Cable cars</li>
+    </ul>
+    <p class="sleep"><span class="badge pending">○ Not yet booked</span><br>
+    <b>Sleep (to book):</b> San Francisco hotel — details to come. This page will be updated once the hotel is booked.</p>
+  </article>
+
+  <article class="day" id="day4">
+    <span class="badge booked">✓ Booked</span>
+    <h3>Fly home — red-eye to Dallas/Fort Worth</h3>
+    <p class="date">Sunday, December 27, 2026 → Monday, December 28, 2026</p>
+    <p class="drive"><b>Flight:</b> United Airlines <strong>UA 2056</strong>, SFO → DFW, departs <strong>11:59 PM Sun Dec 27</strong>, arrives <strong>5:31 AM Mon Dec 28</strong> (3h 32m, nonstop). Basic Economy, non-refundable. Confirmation <strong>HBXZ59</strong>. 7 passengers, $220.40 each, <strong>$1,542.80 total</strong>.</p>
+    <p><strong>⚠️ United Basic Economy is personal-item only — no full-size carry-on.</strong> First checked bag is $0 on this booking, second is $60. Seats are assigned at check-in and can't be changed.</p>
+    <p>Papassorn is not on this flight — she flew out with the group on Dec 20 and returns separately.</p>
+    <div class="btns">
+      <a class="btn gold" href="united-airlines-sfo-dfw-dec27.pdf" target="_blank" rel="noopener">📄 E-ticket receipt — UA 2056</a>
+    </div>
+  </article>
+
+  <h2 id="bookings">Bookings at a glance</h2>
+  <section class="places">
+    <div class="place"><h3>American — Fly out</h3><p>AA 1721 · DFW → SFO · Sun Dec 20, 7:00–8:57 AM · Conf. DXPXJB · 8 adults · $1,643.20 · Ticketed Aug 19, 2026</p><span class="badge booked">✓ Booked</span> <a class="btn" href="american-airlines-dfw-sfo-ticket-dec20.pdf" target="_blank" rel="noopener">📄 PDF</a></div>
+    <div class="place"><h3>Yosemite — Room 1</h3><p>Yosemite Valley Lodge · Dec 21–24 · Traditional Rm 2 Bed · 4 adults · Conf. 1735PC · $863.94</p><span class="badge booked">✓ Booked</span> <a class="btn" href="yosemite-valley-lodge-room1-dec21.pdf" target="_blank" rel="noopener">📄 PDF</a></div>
+    <div class="place"><h3>Yosemite — Room 2</h3><p>Yosemite Valley Lodge · Dec 21–24 · Traditional Rm 2 Bed · 4 adults · Conf. 1735PD · $863.94</p><span class="badge booked">✓ Booked</span> <a class="btn" href="yosemite-valley-lodge-room2-dec21.pdf" target="_blank" rel="noopener">📄 PDF</a></div>
+    <div class="place"><h3>United — Fly home</h3><p>UA 2056 · SFO → DFW · Sun Dec 27, 11:59 PM → Mon Dec 28, 5:31 AM · Conf. HBXZ59 · 7 passengers · $1,542.80</p><span class="badge booked">✓ Booked</span> <a class="btn" href="united-airlines-sfo-dfw-dec27.pdf" target="_blank" rel="noopener">📄 PDF</a></div>
+    <div class="place"><h3>San Francisco hotel</h3><p>To be booked — details to come, and this page will be updated.</p><span class="badge pending">○ To book</span></div>
+  </section>
+  <p style="color:var(--muted)">Booked total so far: <strong>$1,643.20 flights out + $1,727.88 Yosemite + $1,542.80 flights home = $4,913.88</strong>. The San Francisco hotel is the only stay still to book.</p>
+
+  <h2 id="documents">Documents</h2>
+  <section class="places">
+    <div class="place"><h3>American Airlines — ticket receipt</h3><p>AA 1721, DFW → SFO, Dec 20. Confirmation DXPXJB, 8 adults, $1,643.20.</p><a class="btn" href="american-airlines-dfw-sfo-ticket-dec20.pdf" target="_blank" rel="noopener">📄 Open PDF</a></div>
+    <div class="place"><h3>American Airlines — itinerary view</h3><p>AA 1721 trip summary as shown on aa.com (earlier view of the same booking).</p><a class="btn" href="american-airlines-dfw-sfo-itinerary-dec20.pdf" target="_blank" rel="noopener">📄 Open PDF</a></div>
+    <div class="place"><h3>United Airlines — e-ticket receipt</h3><p>UA 2056, SFO → DFW, Dec 27. Confirmation HBXZ59, 7 passengers, $1,542.80.</p><a class="btn" href="united-airlines-sfo-dfw-dec27.pdf" target="_blank" rel="noopener">📄 Open PDF</a></div>
+    <div class="place"><h3>Yosemite Valley Lodge — room 1</h3><p>Confirmation 1735PC, Dec 21–24, Traditional Rm 2 Bed, $863.94.</p><a class="btn" href="yosemite-valley-lodge-room1-dec21.pdf" target="_blank" rel="noopener">📄 Open PDF</a></div>
+    <div class="place"><h3>Yosemite Valley Lodge — room 2</h3><p>Confirmation 1735PD, Dec 21–24, Traditional Rm 2 Bed, $863.94.</p><a class="btn" href="yosemite-valley-lodge-room2-dec21.pdf" target="_blank" rel="noopener">📄 Open PDF</a></div>
+  </section>
+
+  <h2 id="places">All places</h2>
+  <section class="places">
+    <div class="place"><h3>Dallas/Fort Worth (DFW)</h3><p>Departure Dec 20, 7:00 AM · arrival home Dec 28, 5:31 AM.</p><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Dallas+Fort+Worth+International+Airport" target="_blank" rel="noopener">Map: DFW</a></div>
+    <div class="place"><h3>San Francisco (SFO)</h3><p>Arrive Dec 20, 8:57 AM · depart Dec 27, 11:59 PM. Tourist days Dec 24–29 — plan open.</p><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=San+Francisco,+CA" target="_blank" rel="noopener">Map: San Francisco</a></div>
+    <div class="place"><h3>Yosemite Valley Lodge</h3><p>9006 Yosemite Lodge Dr, Yosemite National Park, CA 95389. Dec 21–24, two rooms.</p><a class="btn" href="https://www.travelyosemite.com" target="_blank" rel="noopener">Visit site</a></div>
+    <div class="place"><h3>San Francisco sights</h3><p>Golden Gate Bridge, Fisherman's Wharf &amp; Pier 39, Alcatraz, Chinatown, Union Square, Lombard Street, cable cars.</p><a class="btn" href="https://www.sftravel.com" target="_blank" rel="noopener">SF Travel</a></div>
+  </section>
+
+  <h2>Good to know</h2>
+  <section class="note">
+    <ul>
+      <li><strong>Flights:</strong> AA outbound includes a carry-on; United return is personal-item only, no full-size carry-on. Both are Basic Economy — non-refundable, no changes, seats assigned at check-in.</li>
+      <li><strong>Papassorn</strong> flies out with the group on Dec 20 but is not on the Dec 27 return.</li>
+      <li><strong>Yosemite:</strong> Wi-Fi is limited in the valley — download maps and tickets before arriving. Check-in 4:00 PM, check-out 11:00 AM.</li>
+      <li><strong>December weather:</strong> Yosemite Valley is cold (highs in the 40s °F, nights below freezing, possible snow) — pack warm layers. San Francisco is cool and damp, highs in the 50s °F.</li>
+      <li><strong>Alcatraz</strong> sells out in advance — book tickets early if the group wants to go.</li>
+    </ul>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  var map = L.map('tripmap');
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  var places = [
+    [32.8998, -97.0403, '✈️ Dallas/Fort Worth (DFW)', 'Fly out Dec 20, 7:00 AM · fly home Dec 28, 5:31 AM. <a href="#day1">Fly out</a> · <a href="#day4">Fly home</a>'],
+    [37.6213, -122.3790, '✈️ San Francisco (SFO)', 'Arrive Dec 20, 8:57 AM · depart Dec 27, 11:59 PM. <a href="#day1">Fly out</a> · <a href="#day4">Fly home</a>'],
+    [37.7456, -119.5986, '🏨 Yosemite Valley Lodge', 'Two rooms, Dec 21–24. <a href="#day2">Yosemite</a>'],
+    [37.7749, -122.4194, '🌉 San Francisco', 'Tourist days, plan open. <a href="#day3">San Francisco</a>']
+  ];
+  var bounds = [];
+  places.forEach(function(p) {
+    L.marker([p[0], p[1]]).addTo(map).bindPopup('<b>' + p[2] + '</b><br>' + p[3]);
+    bounds.push([p[0], p[1]]);
+  });
+  L.polyline([
+    [32.8998, -97.0403],
+    [37.6213, -122.3790],
+    [37.7456, -119.5986],
+    [37.7749, -122.4194],
+    [32.8998, -97.0403]
+  ], {color: '#2e5d46', weight: 3, dashArray: '6 6', opacity: 0.8}).addTo(map);
+  map.fitBounds(bounds, {padding: [30, 30]});
+</script>
+<footer>
+  San Francisco &amp; Yosemite Trip · Dec 20–28, 2026 · DFW → SFO → Yosemite → San Francisco → DFW<br>
+  First version — Nov 7, 2026. San Francisco hotel and day plan to be added once booked.
+</footer>
+</body>
+</html>
